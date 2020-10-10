@@ -1,0 +1,152 @@
+---
+title: "Stationarity"
+output: html_document
+---
+
+***
+
+Intuitively, stationarity means that the statistical properties of the process do not change over time.
+
+### __Strong Stationarity__
+Time series is strong stationary given that the unconditional joint probability distribution (probability of two things happening at the same time) does not change when shifted in time. At a window in time a, the distribution is the same as at a window in time b.
+
+### __Weak Stationarity__
+The entire distyribution does not need to be the same per se. But some condtions must be met. __Weak is sufficient__.
+
+* Mean $\mu$ of the time series is constant over time 
+* Variance $\sigma$ of the series is constant over time
+* There should be no seasonal component
+
+### __Why should we care?__
+
+```{r }
+
+
+```
+
+***
+## __Unit Root__
+Unit root is a feature of some stochastic processes (like random walks) that can cause problem in statistical inferencing involving time series models like AR, MA, ARMA. The coefficient $\varphi$ is a \textbf{root}. It can be interpreted as "the value of today depends on the value of yesterday and some randomness we can't predict." In case of \textbf{stationarity}, we expect this process to always converge back to the value of the constant
+The following sections will illustrate how different types of \textbf{roots} affect stationarity in a simple AR(1) model:
+
+$$\gamma_t = \mu + \varphi \gamma_{t-1} + \varepsilon_t$$
+Which can also be represented as an MA($\infty$) model:
+$$ = \varphi^ty_0 + \sum_{t-1}{k=0}\ \varphi^k + \varepsilon_{t-k}$$
+The variance of our time series: 
+$$var(q_t) = \sigma^2 [\varphi^0 + \varphi^2 + \varphi^4, ..., \varphi^{2(t-1)}$$
+The expected value of our time series:
+$$E(y_t) = \varphi^t y_0$$
+
+<br>
+
+### __Stationarity Confirmed: $|\varphi| < 1$__
+Suppose the following scenario for AR(1) process $\gamma_t = \mu + \varphi \gamma_{t-1} + \varepsilon_t$:
+$$\mu = 0$$  
+$$\varphi = 0.5$$
+$$\gamma_{t-1} = 100$$
+The value of yesterday for $\gamma$ was 100 but the $\mu$ is 0. We expect that today, the value will be around 50. Tomorrow, it will be about 25, et cetera. The series is able to \textbf{converge} if $|\varphi| < 1$.
+In light of the equation for expected value:
+$$E(y_t) = \varphi^t y_0$$
+It makes sense that if the absolute value of our coefficient $\varphi$ is smaller than 1, the eventual expected value will tend to 0 as  k tends to infinity. We assume stationarity because the mean remains steady over time lags. The effects of the past will return to the mean. There is a constant relationship between y and x (being time lags). E.g., established brands in mature markets. \textbf{any effect of the past will diminish over time, the series will return to the mean}
+
+<br>
+
+### __Stationarity Refuted: $|\varphi| > 1$__
+Now, suppose that $\varphi = 1.5$. The value of yesterday for $\gamma$ was 100 but the $\mu$ is 0. In light of the equation for expected value:
+$$E(y_t) = \varphi^t y_0$$
+When the exponent t tends to $\infty$, our expected value will skyrocket to $\pm \infty$. We refute stationarity because the mean changes over time lags. The effects of the past evolve over time. There is no constant relationship between y and x (being time lags). E.g., smaller brands in emerging markets. \textbf{Any effect of the past will have an explosive effect over time.}
+
+<br>
+
+### __Stationarity refuted: (Unit root) $|\varphi| = 1$__
+A time series has a unit root if $\varphi =$ 1 or -1. The mean of the time series stays constant, however, variance $\sigma^2$ changes over time. 
+$$var(q_t) = \sigma^2 [\varphi^0 + \varphi^2 + \varphi^4, ..., \varphi^{2(t-1)}]$$
+$$var(q_t) = \sigma^2 [1^0 + 1^2 + 1^4, ..., 1^{2(t-1)}$$
+Which translates to...
+$$var(q_t) = t\sigma^2$$
+This means that variance will increase as time lags increase. Thus, variance will not be constant. \textbf{An effect in the past will become permanent.} Shocks have an explosive effect over time. It's rather rare in marketing with the exception of stocks of products. 
+
+
+<br>
+
+### __Manually Testing for Stationarity__
+We can manually calculate the coefficients. Let's look at the initial difference equation of an AR(2) model as an example: 
+$$y_t = \mu + \varphi y_{t-1} + \varphi_2 y_{t-2} \varepsilon_t$$
+This corresponds to...
+$$L^2y_t = y_{t-2}$$
+(1) Replace $y_{t-1}$ and $y_{t-2}$ with $Ly_t$ and $L^2y_t$:
+$$y_t = \mu + \varphi_1Ly_t + \varphi_2L^2y_t + \varepsilon_t$$
+(2) rewrite by collecting all terms with $y_t$ on the left hand side of the equation:
+$$y_t - \varphi_1Ly_t + \varphi_2L^2y_t = \mu + \varepsilon_t$$
+(3) factor out the $y_t$ because it appears three times:
+$$(1 - \varphi_1L - \varphi_2L^2)y_t = \mu + \varepsilon_t$$
+(4) stable or explosive? We can find out by looking at 
+$$(1 - \varphi_1L - \varphi_2L^2)$$
+(5) the characteristic polynomial equation of it is used. The best way to see what is going on is to put them next to each other. Coefficients remain exactly the same but L operators are replaced by lambdas. Also, we have reversed the powers.
+$$(1*L^0 - \varphi_1L^1 - \varphi_2L^2)$$
+$$(\lambda^2 * 1 - \varphi_1 \lambda^1 - \varphi_2\lambda^0)$$
+Where does this come from? It comes from the AR(2) model and MA($\infty$) theorem. But how does the characteristic equation tell us whether the proces $y_t$ is stable? We set it to zero to make it an actual equation:
+$$(1*L^0 - \varphi_1L^1 - \varphi_2L^2) = 0$$
+The values for $\lambda_i$ will determine whether $y_t$ is a stable (stationary) process or not. If either of these values is above 1, then the process is not stable. \textbf{$y_t$ is a stable process if $|\lambda_i|$ for all i is $< 1$. Or "inside the unit circle"}
+
+<br>
+
+***
+## __Case 1: Non-Stationary, Drift no Trend__
+```{r library, message=FALSE, results='hide'}
+library(FitAR)
+library(forecast)
+library(tseries)
+library(gplots)
+library(aTSA)
+library(astsa)
+```
+
+```{r read file}
+food.df <- read.csv("SLIM0405DataSeries.csv")
+```
+
+```{r, fig.align="center"}
+plot(food.df[,c(1)],food.df[,c(2)], type="l", col="blue", lwd=2, xlab="weeks", ylab="sales", main="Volume sales over time")
+```
+
+### __Augmented Dickey-Fuller Test (ADF)__
+Dickey-Fuller test suggests that the time series has drift but no trend.
+```{r }
+adf.test(food.df[,c(2)])
+```
+
+### __Phillips-Perron Test__
+The PP test suggests time series with drift. 
+```{r }
+pp.test(food.df[,c(5)], output = TRUE)
+```
+
+### __Kwiatkowski-Phillips-Schmidt-Shin (KPSS) test__
+The KPSS indicates time series with drift. 
+```{r }
+kpss.test(food.df[,c(5)], output = TRUE)
+```
+
+<br>
+
+***
+## __Case 2: Non-Stationary, Drift and Trend__
+```{r }
+plot(food.df[,c(1)],food.df[,c(11)], type="l", col="red", lwd=1, xlab="weeks", ylab="sales", main="Volume Sales")
+```
+
+### __Augmented Dickey-Fuller Test (ADF)__
+```{r }
+adf.test(food.df[,c(11)], nlag = 4, output = TRUE)
+```
+
+### __Phillips-Perron Test__
+```{r }
+pp.test(food.df[,c(11)], output = TRUE)
+```
+
+### __Kwiatkowski-Phillips-Schmidt-Shin (KPSS) test__
+```{r }
+kpss.test(food.df[,c(11)], output = TRUE)
+```

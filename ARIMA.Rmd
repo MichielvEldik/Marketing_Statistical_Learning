@@ -1,0 +1,88 @@
+---
+title: "ARIMA"
+output: html_document
+---
+
+An *ARIMA* model is an *Integrated Autoregressive Moving Average Process*. It is a univariate model that is similar to ARMA but can deal with non-stationarity.
+* p = AR polynomial: variable of interest is regressed on its own prior values
+* d = Integrated part: Indicates that the data values have been rteplaced with the *difference* between their values and the previous values (can be more than once)
+* q = MA polynomial: variable of interest depends linearly on the current and various past values of a stochastic term.
+
+When two out of 3 terms are zeros, the model can be referred to as AR, I, or MA. E.g,
+* ARIMA(1, 0, 0) = AR(1)
+* ARIMA(0, 1, 0) = I(1)
+* ARIMA(0, 0, 1) = MA(1)
+
+### ARIMA(0, 1, 0)
+Equivalent to a random *walk model*. The formula $X_t = X_{t-1} + \varepsilon_t$ shows that there is only one thing that helps us predict the future term, which is the past term. An ARIMA(1, 0, 1) with a constant: $X_t = c + X_{t-1} + \varepsilon_t$ is a random walk with drift.
+
+### ARIMA(0, 0, 0)
+A *White noise model. Nothing can be used to predict the future outcome.
+
+```{r, message=FALSE}
+library(FitAR)
+library(forecast)
+library(tseries)
+library(gplots)
+library(aTSA)
+library(astsa)
+library(lmtest)
+foodcorp.df <-read.csv("SLIM0405DataSeries.csv")
+```
+
+```{r }
+plot(foodcorp.df[,c(1)],foodcorp.df[,c(8)], type="l", col="red", lwd=1, xlab="weeks", ylab="sales", main="Volume sales over time")
+```
+
+### ADF test for stationarity
+```{r }
+adf.test(foodcorp.df[,c(8)], nlag = 4, output = TRUE)
+```
+
+### PP test for stationarity
+```{r }
+pp.test(foodcorp.df[,c(8)], output = TRUE)
+```
+### ACF
+Empirical ACF decays only very slowly to zero
+```{r }
+foodacf = acf(foodcorp.df[,c(8)], lag.max = 10)
+```
+
+### PACF
+```{r }
+foodpacf = pacf(foodcorp.df[,c(8)], lag.max = 10)
+```
+
+### Differencing first-order
+```{r }
+foodsel = foodcorp.df[,c(8)]
+fooddif = diff(foodsel)
+```
+
+### ADF test after differencing
+```{r }
+adf.test(fooddif, nlag = 4, output = TRUE)
+```
+
+### PP test after differencing
+```{r }
+pp.test(fooddif, output = TRUE)
+```
+
+### Empirical ACF after differencing
+```{r }
+foodacf = acf(fooddif, lag.max = 10)
+```
+
+### Empirical PACF after differencing
+```{r }
+foodpacf = pacf(fooddif, lag.max = 10)
+```
+
+### auto.ARIMA(1, 1, 1)
+```{r }
+foodsel = foodcorp.df[,c(8)]
+tsfoodsel = as.ts(foodsel)
+auto.arima(tsfoodsel, test = c("adf"), trace = TRUE)
+```

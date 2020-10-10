@@ -1,0 +1,18 @@
+---
+title: "Lag Operator"
+output: html_document
+---
+A so-called *lag operator* or *backward shift operator* is defined as:
+$$B^kX_t = X_{t-k}$$
+Where:
+* k = the amount of steps back we take
+* t = time lag
+
+In time series analysis, the lag operator (L) or backshift operator (B) operates on an element of time series to produce the previous element. When writing the equation for a model with a bunch of lags, it's going to require a lot of writing! We use the lag operator form to shorten the equations. Imagine we have an ARMA(3, 3) model. That would require the following equation:
+$$y_t = \varphi_1 y_{t-1} +  \varphi_2 y_{t-2} +  \varphi_3 y_{t-3}  +  \theta_1 y_{t-1} + \theta_2 y_{t-2} + \theta_3 y_{t-3} + \varepsilon_t$$
+It can be written as where (L) summarizes the lag operations. 
+$$\Phi(L^3)y_t = \Theta(L^3) \varepsilon_t$$
+
+In this case, $\Phi$ and $\Theta$ represent the following:
+$$\Phi = (1 - \varphi_1L -\varphi_2L^2 - \varphi_3L^3)y_t$$
+$$\Theta = (1 + \theta_1L + \theta_2L^2 + \theta_3L^3)\varepsilon_t$$

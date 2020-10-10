@@ -1,0 +1,124 @@
+---
+title: "Moving Average model"
+output: html_document
+---
+***
+## __Introduction__
+An MA model (*short-memory model*) forecasts a series based solely on the past errors in the series - called error lags. Our model depends not on previous values of Y, but on errors from the previous lag. The following equation basically states: The current value for Y, is dependent on the previous error + some current error."
+
+$$Y_t = \mu + \theta\varepsilon_{t-1} + \varepsilon_t$$
+
+### The meaning of error
+But what does an error really mean? Well let's pretend that you have two lines in a time series. One line is your predicted Sales. One is the actual sales made. Essentially, it is how wrong you were yesterday, that is affecting the prediction of tomorrow. The error reflects some sort of external shock due to some hidden factors (in the sense that they are not included in the model). Essentially, you can think of lagged errors as one long term effect minus some slightly less long term effect which gives us a short term effect.
+
+### But how can you predict the first observation then?
+If you have no prediciton for the first observation, how can you start? Well, typically you would start out with the mean of the time series. *If your time series is long enough, it really won't matter where your starting point is*.
+
+### Why MA models are "short-memory" models
+One of the reasons why we shouldn't care about where to begin is the fact that MA is a *short memory model*. This means that error's don't last long in the future.
+
+* In AR(1) models, the effect of shocks that happen long ago have little effect on the present if $|\theta| < 1$. 
+* In MA(1) models, the effect of shocks have *NO* effect on the present if they happened long enough ago.
+
+Let's have a look at equations for yesterday, today, and tomorrow prediction of sales:
+
+$$Y_t = \mu + \theta\varepsilon_{t-2} + \varepsilon_t$$
+$$Y_t = \mu + \theta\varepsilon_{t-1} + \varepsilon_t$$
+$$Y_{t+1} = \mu + \theta\varepsilon_1 + \varepsilon_{t+1}$$
+
+As you can see, the error from yesterday has *no part* in predicting the error for today. It's basically going back to this idea of stationarity. Stationarity was the idea that the dependence of previous observations declines over time. In MA processes, dependence of previous observations actually *disappears* as long as you go far enough into the future.
+
+With Autoregressive models if we look back in time, the first observation still maters (even if this is a very tiny amount). For MA models, there will be literally *NO* effect if you go back in time far enough.
+
+### Some facts on MA processes
+An MA process...
+
+* ACF has only one spike
+* PACF decays exponentially
+* MA(1) is equivalent to AR($\infty$) if $|\theta| < 1$
+* No stationarity restriction required
+* Mean is time-independent. Series return to their historical level
+* variance is time-independent. Series return to their historical level
+
+### Reasons for MA behaviour in marketing
+There can be either a positive or negative MA behavior in marketing. __Postive behavior__: Higher beer sales today due to unexpected heat wave, but also likely tomorrow as heat wave stays on. __Negative relation__: Equilibrium-seeking behaviour of supply and demand such as natural disaster, coronavirus, et cetera. 
+
+
+### __What does the $\theta$ coefficient mean specifically?__
+
+***
+
+## __Case example__
+
+
+```{r library, message=FALSE, results='hide'}
+library(FitAR)
+library(forecast)
+library(tseries)
+library(gplots)
+library(aTSA)
+library(astsa)
+```
+
+```{r read file}
+food.df <- read.csv("SLIM0405DataSeries.csv")
+```
+
+```{r, fig.align = 'center'}
+plot(food.df[,c(1)],food.df[,c(3)], type="l", col="red", lwd=1, xlab="weeks", ylab="sales", main="Volume sales over time")
+```
+
+### Augmented Dickey-Fuller for Stationarity
+
+```{r }
+adf.test(food.df[,c(3)])
+```
+
+### ACF & PACF
+We can recognize MA(1) by observing the ACF and PACF.
+
+* Theoretical ACF has only one spike
+* Theoretical PACF has exponential decay
+The exponential decay can go in two ways: An MA(1), $0 < \theta < 1$ will damp out. MA(1), $-1 < \theta < 0$ will change in signal.
+
+```{r }
+foodacf = acf(food.df[,c(3)], lag.max = 10)
+```
+
+
+```{r }
+foodpacf = pacf(food.df[,c(3)], lag.max = 10)
+```
+
+```{r, echo=FALSE }
+bartry = Reduce(rbind,foodacf)
+bartry2 = t(bartry)
+bartry3 = as.numeric(bartry2[,c(1)])
+bartryb = Reduce(rbind,foodpacf)
+bartry2b = t(bartryb)
+bartry3b = as.numeric(bartry2b[,c(1)])
+
+bartry4 = as.matrix(bartry3)
+bartry4help = t(bartry4)
+bartry4help = bartry4help[,c(2,3,4,5,6,7,8,9,10,11)]
+bartry4 = t(bartry4help)
+bartry4 = t(bartry4)
+bartry4b = as.matrix(bartry3b)
+bartry5 = cbind(bartry4,bartry4b)
+bartry6 = t(bartry5)
+```
+
+
+```{r }
+barplot(bartry6, ylim = c(-1,1), main = "ACF (red) and PACF (grey) function", col = c("red", "grey"), beside = TRUE)
+```
+
+
+
+### auto.arima will output ARIMA(0, 0, 1) for MA(1) Processes
+```{r }
+foodsel = food.df[,c(3)]
+tsfoodsel = as.ts(foodsel)
+auto.arima(tsfoodsel, test = c("adf"), trace = TRUE)
+```
+

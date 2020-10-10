@@ -1,0 +1,94 @@
+---
+title: "Autoregressive model"
+
+output: html_document
+---
+***
+## __Definition__
+An autoregressive model is a model where the outcome varibale depends linearly on its previous values and on a stochastic term which is imperfectly predictable. __AR(1)__ is called the first order autoregressive process. The outcome variable in a first order AR process at some point in time t is related only to the time periods that are one period apart. AR(1) difference equation looks as follows:
+$$y_t = \mu + \varphi y_{t-1} + \varepsilon_t$$
+
+The __AR(p)__ model establishes that a realization at time t is a linear combination of the p previous realization plus some noise. It thus has multiple carryover coefficients instead of just one.
+$$X_t = c + \sum_{j=1}^{p}\varphi_jX_{t-j}+\varepsilon_t$$
+
+### __AR: The Long Memory Model__
+An AR model is a long memory model because of the recursion that goes back until the beginning of the series. Today depends on the day before, which depends on the day before that, which depends on the day before that... etc. Let's say we have the following equation for two terms with AR process.
+<br>
+
+Value of tomorrow ($Y_t$) is dependent on the value of today ($Y_t$) with theoretical error of today. 
+$$Y_t = \mu + \varphi Y_{t-1}+\varepsilon_t$$
+The value of today is dependent on the day before with its corresponding error.
+$$Y_{t-1} = \mu + \varphi Y_{t-2}+\varepsilon_{t-1}$$
+In sum, the value of tomorrow ($Y_t$) is going to be slighlty dependent on that of yesterday and today.
+$$Y_t = \mu + \varphi (\mu + \varphi Y_{t-2}+ \varphi \varepsilon_{t-1}) + \varepsilon_t$$
+$$Y_t = \mu^* + \varphi^2Y_{t-2}+\varphi\varepsilon_{t-1}+\varepsilon_t$$
+And so on for $Y_\infty$... If you trace back all the way to the beginning of your time series, you will notice that the first term of the time series can still have an effect, albeit (hopefully) a very minimal effect at that. **The effects of these first terms have little effect on the present IF $|\varphi |<1$. Else, it wil diverge or become a random walk.
+
+***
+
+## __Case example__
+
+```{r library, message=FALSE, results='hide'}
+library(FitAR)
+library(forecast)
+library(tseries)
+library(gplots)
+library(aTSA)
+library(astsa)
+library(lmtest)
+```
+
+```{r read file}
+food.df <- read.csv("SLIM0405DataSeries.csv")
+```
+
+```{r }
+plot(food.df[,c(1)],food.df[,c(2)], type="l", col="red", lwd=1, xlab="weeks", ylab="sales", main="Volume sales over time")
+```
+
+### Augmented Dickey-Fuller for Stationarity
+```{r }
+adf.test(food.df[,c(2)])
+```
+
+### ACF & PACF
+We can recognize MA(1) by observing the ACF and PACF.
+
+* Theoretical ACF has exponential decay
+* Theoretical PACF has only a spike
+The exponential decay can go in two ways: An MA(1), $0 < \varphi < 1$ will damp out. MA(1), $-1 < \varphi < 0$ will change in signal.
+```{r }
+foodacf = acf(food.df[,c(2)], lag.max = 10)
+```
+
+```{r }
+foodpacf = pacf(food.df[,c(2)], lag.max = 10)
+```
+
+```{r, echo=FALSE }
+bartry = Reduce(rbind,foodacf)
+bartry2 = t(bartry)
+bartry3 = as.numeric(bartry2[,c(1)])
+bartryb = Reduce(rbind,foodpacf)
+bartry2b = t(bartryb)
+bartry3b = as.numeric(bartry2b[,c(1)])
+bartry4 = as.matrix(bartry3)
+bartry4help = t(bartry4)
+bartry4help = bartry4help[,c(2,3,4,5,6,7,8,9,10,11)]
+bartry4 = t(bartry4help)
+bartry4 = t(bartry4)
+bartry4b = as.matrix(bartry3b)
+bartry5 = cbind(bartry4,bartry4b)
+bartry6 = t(bartry5)
+```
+
+```{r }
+barplot(bartry6, ylim = c(-1,1), main = "ACF (red) and PACF (grey) function", col = c("red", "grey"), beside = TRUE)
+```
+
+### auto.arima will output ARIMA(1, 0, 0) for MA(1) Processes
+```{r }
+foodsel = food.df[,c(2)]
+tsfoodsel = as.ts(foodsel)
+auto.arima(tsfoodsel, test = c("adf"), trace = TRUE)
+```

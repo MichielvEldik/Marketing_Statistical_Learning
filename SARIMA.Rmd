@@ -1,0 +1,25 @@
+---
+title: "SARIMA"
+output: html_document
+---
+
+*On top of the *Seasonality* is a repeated pattern in a *year* that happens over and over and over again. That means that on top of your ARIMA model, you may have a seasonal component. $ARIMA(p, d, q)(P, D, Q)_m$. If it takes place over longer periods than a year, it is called *cycle*.
+
+* P = number of seasonal autoregressive components
+* D = number of seasonal differences
+* Q = number of seasonal moving average components
+* m = the seasonal factor. The number of steps for a single seasonal period. e.g., 12 = monthly.
+
+<center>![SARIMA](SARIMA.png)</center>
+
+The basic idea is that many sales series show typical seasonal patterns over the year. Like higher sales periods, lower sales period. During christmas, it may be higher, during summer, it may be lower. The order of seasonality is basically the sames as we would do with non-seasonal processes. *However, the patterns occur at lags 1s, 2s, 3s instead of 1, 2, 3.* That means, The predictions of Christmas sales this year are a function of Christmas last year, contra to what was predicted a few months ago.
+
+An example: $ARIMA(1, 1, 1)(1, 1, 1)_4$ says that I want to integrate my model (d) by one period. And also, I want to integrate based on 4 periods in the past. This would go for MA and AR as well.
+
+## How To Identify and Remove Seasonality?
+It's subjective. The best way is to plot your data and have a look. It can be dealt with by:
+* Dummy variables
+* Deseasoning
+* Sinus and Cosinus functions (more advanced)
+
+

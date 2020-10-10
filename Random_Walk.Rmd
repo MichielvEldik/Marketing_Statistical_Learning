@@ -1,0 +1,61 @@
+---
+title: "Random Walk Process"
+output: html_document
+---
+
+***
+### __Definition__
+In mathematics, a random walk is a mathematical object, known as a stochastic or random process, that describes a path that consists of a succession of random steps on some mathematical space such as the integers.
+
+### __Intuition__
+Imagine that we have a person that starts from origin (0),  and will either go forward $p$ or backward $1-p$ based on a random probability. The walk is random in the sense that the future direction the person moves in is random and completely independent of anything in the present or past. Any previous actions say nothing about the next action. A random walk is __not non-stationary__ because it isn't constant in mean, as is evident by our calculations. A random walk is non-stationary time-series because __its variance and covariance are a function of time__. The mean is in fact constant}.
+
+<br>
+
+### __Why is AR(1) with $\varphi = 1$ (non-stationary) a Random Walk?__
+Given the formal equation for AR(1)...
+$$y_t = \mu + \varphi y_{t-1} + \varepsilon_t$$
+Now imagine that $\mu$ is 0 (that's always the case with time series), and $\varepsilon = 1$. Since the condition is $|\varphi| = 1$. We would end up with the exact formula for random walk:
+$$y_t = (1*) y_{t-1} + \varepsilon_t$$
+This implies that \textbf{The best prediciton of y for the next prediction is the current value of y}. The mean is constant but the variance is not! It's a random process in the sense that there is really nothing the past is able to tell us about which way the outcome variable may go. 
+
+<br>
+
+### __Why is ARIMA(0, 1, 0) a Random Walk?__
+ARIMA(0, 1, 0) is the cumulative sum of and independent and identically distributed random variable. In other words, it's noise moving in a certain direction. For an ARIMA(0,0,0)x(0,1,0) it is not much different, except it is seasonal.
+
+<br>
+
+### __Why is a Random Walk not White Noise?__
+For random walks, $Var(x_{t+1}) = Var(x_t) + Var(\varepsilon_{t+1})$ is strictly increasing. With random noise, variance is constant over time.
+
+<br>
+
+### __Why does the variance of a Random Walk increase over time?__
+The random walk can be defined as $Y_{t} = Y_{t-1} + e_t$ where $e_t$ is white noise. Because it keeps adding the variance of the next increments to the variability we have in getting to where we are now. Let's simplify it with an example. We can Flip a coin in the following ways.
+$$e_i = \left\{ \begin{array}{c} 1 \ \text{with} \ Pr = .5 \\ -1 \ \text{with} \ Pr = .5 \end{array} \right.$$
+Now, suppose you have gathered an army of coin flippers. Their instructions are to, at your command, flip their coin, and keep a working tally of what their results were, along with a summation of all their previous results. Each individual flipper is an instance of the random walk. and aggregating over all of your army should give you a take on the expected behavior. The result may look something like this.
+<center> ![Random Walk](random_walk.png)</center>
+
+
+#### __Flip 1__
+About half of your army flips heads, and half flips tails. The expectation of the sum, taken across your whole army, is zero. The maximum value of 𝑊 across your whole army is 1 and the minimum is −1, so the total range is 2.
+
+#### __Flip 2__
+About half flip heads, and half flips tails. The expectation of this flip is again zero, so the expectation of 𝑊 over all flips does not change. Some of your army has flipped 𝐻𝐻, and some others have flipped 𝑇𝑇, so the maximum of 𝑊 is 2 and the minimum is −2; the total range is 4.
+
+#### __Flip n__
+About half flip heads, and half flips tails. The expectation of this flip is again zero, so the expectation of 𝑊 over all flips does not change, it is still zero. If your army is very large, some very lucky soldiers flipped 𝐻𝐻⋯𝐻 and others 𝑇𝑇⋯𝑇. That is, there is a few with 𝑛 heads, and a few with 𝑛 tails (though this is getting rarer and rarer as time goes on). So, at least in our imaginations, the total range is 2𝑛.
+
+#### __Hence...__
+So here's what you can see from this thought experiment:
+* The expectation of the walk is zero, as each step in the walk is balanced.
+* The total range of the walk grows linearly with the length of the walk.
+To recover intuition we had to discard the standard deviation and use in intuitive measure, the range.
+
+<br>
+
+#### __Random Walk With Drift__
+Despite random walk being non-stationary, it retains the characteristic of having a constant mean. However, there is the possibility of random walk in a time series with a trend. In this case, drift helps to deal with that by adding a constant coefficient.
+
+$$X_t = a + X_{t-1} + \varepsilon_t$$

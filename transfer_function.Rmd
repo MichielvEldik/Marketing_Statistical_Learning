@@ -1,0 +1,31 @@
+---
+title: "Transfer Function Analysis & Distributed Lag Model"
+output: html_document
+---
+
+Transfer Function Analysis is about relating multiple series to each other. For example, predicting sales based on (1) previous sales, and (2) advertising. It is hence an extension of ARIMA to m*multivariate analysis*. Let's say we want to explain sales by advertising.
+* Advertising often no only has direct but also delayed effects
+* Often used specification: *Distributed Lag Model*
+
+The general dynamic regression model is formally noted as:
+$$y_t = \mu + v_k(B)x_t+\varepsilon_t$$
+The *Beta coefficient* is identified by:
+$$(B)^ix_t = x_{t-i}$$
+
+The *transfer function* $v_k(B)$ tells us something about how much the initial impact (B) of a variable (e.g., advertising) will decrease/increase over a k amount of lags:
+$$v_k(B) = v_0+v_1(B)+v_2(B)^2+,...,+v_k(B)^k$$
+
+Example: direct and 1-period delay effects of advertising on sales:
+$$sales_t = \mu + v_0advertising_t + v_1advertising_{t-1}+\varepsilon_t$$
+It could be written as follows:
+$$S_t = c + B_0A_t + B_1A_{t-1} + \varepsilon_t$$
+But imagine if we had many lagged terms included, we could summarize it using the *transfer function*. E.g., we know that it will decrease by 25% every lag, so that after four lags, the effect of advertising on sales is 0%. Defining the transfer function saves us from writing down the same thing 4 times in a row. $v_k$ simply is multiplied by the Beta.
+
+* Transfer function is also called *response function*
+* Transfer function coefficients are also called *impulse response weights*
+
+## What is the lag distirbution?
+The lag distribution is a graph with Beta values for all lags of a variable (y-axis), over its corresponding lag value (x). It tells us the impact of changes in independent variables in each period. 
+
+
+

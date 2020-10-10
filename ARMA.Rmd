@@ -1,0 +1,54 @@
+---
+title: "ARMA"
+output: html_document
+---
+
+Autoregressive moving average processes with order(p, q) where p = AR, and q = MA. It's a model that is used to describe a *Weakly Stationary Time Series*, so that is a prerequisite for it to work. 
+* p = AR polynomial
+* q = MA polynomial
+The formula looks as follows:
+$$\varphi(B)y_t = \mu + \theta_q(B) \varepsilon_t$$
+$$X_t = c + \varepsilon_t +\sum^{q}_{n=1} \varphi_i X_{t-i} +\sum^{q}_{n=1} \theta_i\varepsilon_{t-i}$$
+
+## How to recognize ARMA?
+* ACF decays
+* PACF decays too
+
+```{r, results = 'hide', message=FALSE}
+library(FitAR)
+library(forecast)
+library(tseries)
+library(gplots)
+library(aTSA)
+library(astsa)
+library(lmtest)
+foodcorp.df <-read.csv("SLIM0405DataSeries.csv")
+```
+
+### The Data
+```{r }
+plot(foodcorp.df[,c(1)],foodcorp.df[,c(10)], type="l", col="red", lwd=1, xlab="weeks", ylab="sales", main="Volume sales over time")
+```
+
+### ADF test for stationarity
+```{r }
+adf.test(foodcorp.df[,c(10)])
+```
+
+### ACF
+```{r }
+foodacf = acf(foodcorp.df[,c(10)], lag.max = 10)
+```
+
+### PACF
+```{r }
+foodpacf = pacf(foodcorp.df[,c(10)], lag.max = 10)
+```
+
+### Auto.arima: ARIMA(1, 0, 1)
+```{r }
+foodsel = foodcorp.df[,c(10)]
+tsfoodsel = as.ts(foodsel)
+foodarima <-arima(tsfoodsel, order = c(1,0,1))
+auto.arima(tsfoodsel, test = c("adf"), trace = TRUE)
+```

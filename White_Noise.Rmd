@@ -1,0 +1,37 @@
+---
+title: "White Noise"
+output: html_document
+---
+```{r library, message=FALSE, results='hide'}
+library(FitAR)
+library(forecast)
+library(tseries)
+library(gplots)
+library(aTSA)
+library(astsa)
+```
+
+```{r read file}
+food.df <- read.csv("SLIM0405DataSeries.csv")
+```
+### Definition of White Noise
+White Noise is a random signal with equal intensities at every frequency and is often defined in statistics as a signal whose samples are a sequence of unrelated, random variables with no mean and limited variance. The term comes from light, if you have all wavelengths of light present, the resulting light is white. The values in a white noise series are not correlated. You can infer no data from one sample on a different sample.
+
+### Why Care About White Noise?
+By definition, white noise is not predictable. \textbf{Why then should we care about white noise?} Whenever we do a time series analysis, we assume that our outcome variable $y_t$ is a combination of signal (something predictable) $+$ noise (something random). If one can prove that the residuals are, in fact, white noise... It means that the model fully captured the noise and we did a good job modeling the data! Hence, if one can prove that the residuals are white noise, one can prove something about the validity of your model. White noise is a type of time series with some particular characteristics:
+
+* mean $\mu$ = 0
+* standard deviation $\sigma$ is constant with time
+* Correlation $\rho$ between lags is 0
+
+White Noise can easily be generated in R.
+
+```{r, fig.align = 'center'}
+WN <- arima.sim(model = list(order = c(0, 0, 0)), n = 200)
+plot.ts(WN,col=4, main="White Noise Series")
+```
+
+
+### Testing for White Noise
+White Noise is present if auto.arima returns ARIMA(0, 0, 0) as the best fitting model for your data. If you would check out your ACF and PACF plots, no terms should be correlated significantly. Another option is to check visually. That's right, just look at it! Furthermore, one may do global versus local checks.
+

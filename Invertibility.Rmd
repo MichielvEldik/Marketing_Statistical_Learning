@@ -1,0 +1,59 @@
+---
+title: "Invertiblity"
+output: html_document
+---
+
+* An MA(1) model can be represented as an AR($\infty$) model. 
+* An AR(1) process can be represented as a MA($\infty$) model
+
+***
+### __MA(1) model as an AR($\infty$) model.__ 
+
+Imagine if our prediction of $y_t$ is a function of the random error $\varepsilon$ of one previous lag and the random error $\varepsilon$ of today.  
+$$C_t = \theta \varepsilon_{t-1} + \varepsilon_t$$
+It's a great model but it's kind of difficult to implement. I have the $\varepsilon_{t-1}$ so that's fine... But I don't actually have the $\varepsilon_t$ of today. How do I actually plug anything in there? Well, we can use the $C_t$ values to transform using the lag operator we learned about.
+
+(1) Use lag operator to rewrite one side of the equation. 
+$$C_t = (1 - \theta L^1) \varepsilon_t$$
+
+(2) Now I can move part of the equation to isolate $\varepsilon_t$
+$$\frac{C_t}{(1-\theta L)} = \varepsilon_t$$
+
+(3) So now it's time to include the concept of *convergence* in an *infinite geometric series*. Firstly, a *geometric sequence* is a sequence of numbers (a) in which the ratio between consecutive terms is constant. E.g., 2, 6, 18, etc. this *ratio* (r) is in this case *3*. Hence, an infinite geometric sequence would look as follows:
+$$S_{\infty} = a + ra + r^2a +,..., \infty$$
+Now, given that $|r|<1$, we know that this series will eventually converge towards 0. The initial number will get really small. When such an infinite series converges, it will look as follows:
+$$S_{\infty} = \frac{a}{1-r}$$
+That looks familiar right?! It looks like our transformed AR(1).
+$$\frac{C_t}{(1-\theta L)} = \varepsilon_t$$
+(4) Instead of $|r|<1$ we would have $|\theta|<1$ as the condition. So what does this mean? Well it means that if we make $\varepsilon_t$ equal to $\infty \varepsilon_t$, we can rewrite the above equation as $S_{\infty} = a + ra + r^2a +,..., \infty$:
+$$S_{\infty} = a + ra + r^2a +,..., \infty$$
+$$\varepsilon_t = \theta C_{t-1} + \theta^2C_{t-2} + ,..., \infty + C_t$$
+(5) Which can be moved about to make:
+$$C_t = - \theta C_{t-1} - \theta^2C_{t-2} - ,..., \theta^{\infty}C_{t-\infty} + \varepsilon_t$$
+(6) In this manner, we just converted an MA(1) process to an AR($\infty$) process!
+
+***
+
+### __AR(1) model as an MA($\infty$) model (Koyck Transformation)__
+
+An AR(1) series can be seens as an infinite sum of error terms. In this Koyck Transformation, it is shown how an AR(1) process can be interpreted as an MA($\infty$). An AR(1) process can be seen as an infinite moving average process. A process with infinite error terms. 
+
+(1) The following:
+$$X_t = \rho X_{t-1} + \varepsilon_t$$
+
+(2) Can be rewritten as:
+$$X_t - \rho X_{t-1} = \varepsilon_t$$
+
+(3) This can be written in a different way if we define the *lag operator*. We can insert it (L).
+$$(1-\rho L)X_T = \varepsilon_t$$
+
+(4) The *lag operator* of a time series $X_t$ simply returns the value of the series in the last period $X_{t-1}$. A lag operator squared would simply be $L^2X_t = X_{t-2}$. It turns out that we can treat this operator as an algabraic value. We can thereby change the way we write the last equation:
+$$X_T = \frac{\varepsilon_t}{1-\rho L}$$
+
+(5) This is the same thing as:
+$$X_T = \frac{\varepsilon_t}{1-\rho L} = \varepsilon_t + \rho L \varepsilon_t + \rho^2L^2\varepsilon_t + ..., \infty$$
+(6) Which equates to (with lag operator replaced)....
+$$X_T = \varepsilon_t + \rho \varepsilon_{t-1} + \rho^2\varepsilon_{t-2} + ..., \infty$$
+
+We now have essentially turned an MA(1) to an AR($\infty$) process!
+
