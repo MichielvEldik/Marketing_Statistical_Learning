@@ -1,0 +1,25 @@
+---
+title: "Ergodic Hypothesis"
+output: html_document
+---
+
+### The Ergodic Hypothesis
+The ergodic hypothesis is a key analytical device of equilibrium statistical mechanics. It underlies the assumption that the time average and the expectation value of an observable are the same. Where it is valid, dynamical descriptions can often be replaced with much simpler probabilistic ones — time is essentially eliminated from the models
+
+### The Ergodic Stochastic Process
+In econometrics and signal processing, a stochastic process is said to be ergodic if its statistical properties can be deduced from a single, sufficiently long, random sample of the process. The reasoning is that any collection of random samples from a process must represent the average statistical properties of the entire process. I.e., a birds-eye view of the collection of samples must represent the whole process. Conversely, \textbf{a process that is not ergodic is a process that changes erratically at an inconsistent rate.}
+
+A discrete-time random process $X[n]$ is ergodic in mean if:
+$$ \hat{\mu}_X  = \frac{1}{N} \sum{N}{n =1}\ X[n]$$
+With a sufficiently long sequence, you will gain more insight into the problem to the extent that the estimated mean tends to the sample mean.
+
+### Convergence in mean
+Convergence is when two or more things come together to form a new, whole. The convergence of a sequence $X_n$ to $X$ is to say that the distance between $X$ and $X_n$ is getting smaller and smaller. 
+A random variable $X_n$ tends in probability $p$ $\to$ to a constant $C$ if $\lim_{n \to \infty}$ of the probability that $X_n$ differs from $C$ in absolute magnitude by an amount $\varepsilon$ is equal to zero. 
+$$X_n \to^p C$$
+if...
+$$\lim_{n \to \infty} P(|X_n - C| \ge \varepsilon) = 0$$
+The concept is pretty much equaivalent to that of the textfb{Weak Law of Large Numbers} in that the probability of the predicted stochastic variable $\bar{X} \to^p \mu$. \textbf{mean square convergence} is a method of proving that this works. If a mean square of a random variable $X_n$ can convert to a constant, then a random variable $X_n$ with probability $p$ can do so too.
+$$X_n \to^{ms} C = X_n \to^p C$$
+When does a random variable $X_n$ converges mean-square to a constant? (1) The limit as $n$ tends to infinity of the expectation E of a random variable $X[n]$ is a constant C. (2) In the limit as $n$ tends to infinity of the variance of $X_n$ must be equal to 0.
+Interestingly, we don't just have to have convergence to a probability of a constant. We can actually have convergence in probability of a random variable $X$.

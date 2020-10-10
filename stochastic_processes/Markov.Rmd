@@ -1,0 +1,18 @@
+---
+title: "Markov Processes"
+output: html_document
+---
+
+A Markov Chain is a stochastic process, but it differs from a general stochastic process in that a Markov Chain must be \textbf{memory-less}. That is, future actions are not dependent upon the steps that led up to the present state. The only thing that matters in determining the future state is the current present state. This is called the \textbf{Markov Property}. For a random process, if we know that value taken by the process at a given time, we won't get any additional information about the future behaviour of the process by gathering more knowledge about the past.  A more mathematical definition: For any given time, the conditional distribution of future states of the process fiven present and past states, depends only on the present state and not at all on the past states \textbf{memoryless property}). The so-called \textbf{Markov Chain} is a Markov Process with \textbf{discrete time} and \textbf{discrete state space}.  
+
+For example, Laura can travel between three places: work, home, and the Eiffel tower. We will refer to this as Laura's \textbf{states}. The \textbf{transition probabilities} tell us which state Laura is likely to travel to, given where she is. Every time she travels, we call this a \textbf{transition event}.  Imagine the following probabilities:
+
+* Current state $=$ home $|$ stay home $= 0.5$ $|$ Go Eiffel $= 0.1$ $|$ Go work $= 0.4$
+* Ccurrent state $=$ work  $|$ stay work $= 0.3$ $|$ Go Eiffel $= 0.1$ $|$ Go home $= 0.6$
+* Current state $=$ Eiffel  $|$ stay Eiffel $= 0.0$ $|$ Go Work $= 0.0$ $|$ Go home $= 1.0$
+
+Alternatively, this could be summarized in a \textbf{transition probability matrix}. Markov Chains can be \textbf{time-inhomogeneous}, which means that as time goes on (steps increase), the probability of moving from one state to the other state may change.
+
+A discrete-time stochastic process is a Markov Chain if, for t = 0, 1, 2... and all states. P(future $|$ present, past) $=$ P( future $|$ present)
+$$Pr(X_n = i_n | X_{n-1} = i_{n-1}) = Pr(X_n = i_n | X_0 = i_0, X_1 = i_1, ..., X_{n-1} = i_{n_1}) $$
+In other words, knowledge of future state - 1 is all that is necessary to determine the probability distribution of the future state.  
