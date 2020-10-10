@@ -36,6 +36,7 @@ For example, the autocorrelation for $Y$ with lags $k=2$ will take into account 
 #### __1.1.2 Partial Autocorrelation Function (PACF)__
 The partial autocorrelation function only cares about the __direct__ correlation between $Y_t$ and $Y_{t-1}$. In the case of PACF, all lags are accounted for in regressing $Y_t$. In this manner, their confounding impact is controlled for, exposing only the direct correlation of $Y_{t-q}$ with $Y_t$.  It is useful in __determining the order of an AR(q) model__ for this precise reason. We want to get an 'isolated' perspective of how well each lag $k$ in time helps to predict $Y_t$. 
 
+
 ### __1.2. The 'Long Memory' Model__
 An AR model is a long memory model because of the recursion that goes back until the beginning of the series. Today depends on the day before, which depends on the day before that, which depends on the day before that... etc. Let's say we have the following equation for two terms with AR process.
 <br>
@@ -47,7 +48,7 @@ $$Y_{t-1} = \delta + \varphi Y_{t-2}+\varepsilon_{t-1}$$
 In sum, the value of tomorrow ($Y_t$) is going to be slighlty dependent on that of yesterday and today.
 $$
 \begin{aligned}
-Y_t &= \delta + \varphi (\mu + \varphi Y_{t-2}+ \varphi \varepsilon_{t-1}) + \varepsilon_t \\
+Y_t &= \delta + \varphi (\delta + \varphi Y_{t-2}+ \varphi \varepsilon_{t-1}) + \varepsilon_t \\
 Y_t &= \delta^* + \varphi^2Y_{t-2}+\varphi\varepsilon_{t-1}+\varepsilon_t
 \end{aligned}
 $$
@@ -72,7 +73,7 @@ If we interpret every previous lag as an independent shock of the mean up to all
 
 ***
 
-## __2. Practical Example__
+## __2. Practical Example Using R__
 ### __2.1. Plotting the Time Series Data__
 ```{r library, message=FALSE, results='hide', echo=FALSE}
 library(FitAR)
@@ -88,8 +89,8 @@ library(lmtest)
 food.df <- read.csv("../SLIM0405DataSeries.csv")
 ```
 
-```{r }
-plot(food.df[,c(1)],food.df[,c(2)], type="l", col="red", lwd=1, xlab="weeks", ylab="sales", main="Volume sales over time")
+```{r, centerline=TRUE }
+plot(food.df[,c(1)],food.df[,c(2)], type="l", col="black", lwd=1, xlab="weeks", ylab="sales", main="Volume sales over time")
 ```
 
 ### __2.2. Testing for Stationarity__
@@ -100,17 +101,17 @@ In the previous section, we established that stationarity is an important prereq
 adf.test(food.df[,c(2)])
 ```
 
-### __Phillips-Perron Test__
+#### __2.2.2. Phillips-Perron Test__
 ```{r }
 pp.test(food.df[,c(2)])
 ```
 
-### __Kwiatkowski-Phillips-Schmidt-Shin (KPSS) test__
+#### __2.2.3. Kwiatkowski-Phillips-Schmidt-Shin (KPSS) test__
 ```{r }
 adf.test(food.df[,c(2)])
 ```
 
-### __ACF & PACF__
+#### __2.2.4. determining type and order with ACF & PACF__
 We can recognize MA(1) by observing the ACF and PACF.
 
 * Theoretical ACF has exponential decay
@@ -145,7 +146,7 @@ bartry6 = t(bartry5)
 barplot(bartry6, ylim = c(-1,1), main = "ACF (red) and PACF (grey) function", col = c("red", "grey"), beside = TRUE)
 ```
 
-### auto.arima will output ARIMA(1, 0, 0) for MA(1) Processes
+### __auto.arima test__
 ```{r }
 foodsel = food.df[,c(2)]
 tsfoodsel = as.ts(foodsel)
