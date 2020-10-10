@@ -4,31 +4,77 @@ title: "Autoregressive model"
 output: html_document
 ---
 ***
-## __Definition__
-An autoregressive model is a model where the outcome varibale depends linearly on its previous values and on a stochastic term which is imperfectly predictable. __AR(1)__ is called the first order autoregressive process. The outcome variable in a first order AR process at some point in time t is related only to the time periods that are one period apart. AR(1) difference equation looks as follows:
-$$y_t = \mu + \varphi y_{t-1} + \varepsilon_t$$
+## __1. Conceptual Background__
+### __1.1. AR(q) Model__
+An autoregressive model is a model where the outcome varibale depends linearly on its previous values and on a stochastic term which is imperfectly predictable. __AR(1)__ is called the first order autoregressive process. The outcome variable in a first order AR process at some point in time t is related only to the time periods that are one period apart. __AR(1)__ difference equation looks as follows:
+$$y_t = \delta + y_{t-1} + \varepsilon_t$$
 
 The __AR(p)__ model establishes that a realization at time t is a linear combination of the p previous realization plus some noise. It thus has multiple carryover coefficients instead of just one.
-$$X_t = c + \sum_{j=1}^{p}\varphi_jX_{t-j}+\varepsilon_t$$
+$$X_t = \delta + \sum_{j=1}^{p}\varphi_jX_{t-j}+\varepsilon_t$$
 
-### __AR: The Long Memory Model__
+#### __1.1.1. Key Assumptions__
+
+* Errors are independently distributed with a normal distribution that has a 0 mean. $w_t \overset{iid}{\sim} N(0, \sigma^2_w)$
+* Properties of the errors $\varepsilon$ are independent of _Y_
+* Mean $\mu$ of the time series is constant over time, refute $|\varphi|<1$ ([__stationarity__](Stationarity.html))
+* Variance $\sigma$ of the series is constant over time $|\varphi| \neq 1$ ([__stationarity__](Stationarity.html)) 
+* There should be no seasonal component ([__stationarity__](Stationarity.html))
+
+
+#### __1.1.2. Sample Autocorrelation Function (ACF)__
+In time series analysis, __autocorrelation__ (a.k.a. __serial correlation__ & __autocovariance__) is the similarity between observations as a function of the lag time between them. You can approach the concept by thinking of regular [variance](../variance.html) but instead of having two different variables, you use the same variable and compare the values in different time periods $Y_t$ and $Y_{t-1}$. A Pearson Correlation test is used to calculate correlations. The formula for ACF is stated as follows:
+
+$$r_{k} = \frac{\sum_{i=1}^{N-k}(Y_{i} - \bar{Y})(Y_{i+k} - 
+         \bar{Y})} {\sum_{i=1}^{N}(Y_{i} - \bar{Y})^{2} }$$
+
+For example, the autocorrelation for $Y$ with lags $k=2$ will take into account the correlation between $Y_t$ and $Y_{t-1}$; $Y_{t-1}$ and $Y_{t-2}$; $Y_{t}$ and $Y_{t-2}$. So both the indirect correlations and the direct correlation make up autocorrelation. The autocorrelation function has two main purposes:
+
+* To detect non-randomness in data.
+* To identify an appropriate time series model if the data are not random.
+* To identify the order of an [__MA(q) model__](MA_model.html)
+
+#### __1.1.2 Partial Autocorrelation Function (PACF)__
+The partial autocorrelation function only cares about the __direct__ correlation between $Y_t$ and $Y_{t-1}$. In the case of PACF, all lags are accounted for in regressing $Y_t$. In this manner, their confounding impact is controlled for, exposing only the direct correlation of $Y_{t-q}$ with $Y_t$.  It is useful in __determining the order of an AR(q) model__ for this precise reason. We want to get an 'isolated' perspective of how well each lag $k$ in time helps to predict $Y_t$. 
+
+### __1.2. The 'Long Memory' Model__
 An AR model is a long memory model because of the recursion that goes back until the beginning of the series. Today depends on the day before, which depends on the day before that, which depends on the day before that... etc. Let's say we have the following equation for two terms with AR process.
 <br>
 
 Value of tomorrow ($Y_t$) is dependent on the value of today ($Y_t$) with theoretical error of today. 
-$$Y_t = \mu + \varphi Y_{t-1}+\varepsilon_t$$
+$$Y_t = \delta + \varphi Y_{t-1}+\varepsilon_t$$
 The value of today is dependent on the day before with its corresponding error.
-$$Y_{t-1} = \mu + \varphi Y_{t-2}+\varepsilon_{t-1}$$
+$$Y_{t-1} = \delta + \varphi Y_{t-2}+\varepsilon_{t-1}$$
 In sum, the value of tomorrow ($Y_t$) is going to be slighlty dependent on that of yesterday and today.
-$$Y_t = \mu + \varphi (\mu + \varphi Y_{t-2}+ \varphi \varepsilon_{t-1}) + \varepsilon_t$$
-$$Y_t = \mu^* + \varphi^2Y_{t-2}+\varphi\varepsilon_{t-1}+\varepsilon_t$$
-And so on for $Y_\infty$... If you trace back all the way to the beginning of your time series, you will notice that the first term of the time series can still have an effect, albeit (hopefully) a very minimal effect at that. **The effects of these first terms have little effect on the present IF $|\varphi |<1$. Else, it wil diverge or become a random walk.
+$$
+\begin{aligned}
+Y_t &= \delta + \varphi (\mu + \varphi Y_{t-2}+ \varphi \varepsilon_{t-1}) + \varepsilon_t \\
+Y_t &= \delta^* + \varphi^2Y_{t-2}+\varphi\varepsilon_{t-1}+\varepsilon_t
+\end{aligned}
+$$
+
+And so on for $Y_\infty$... If you trace back all the way to the beginning of your time series, you will notice that the first term of the time series can still have an effect, albeit (hopefully) a very minimal effect at that.
+The effects of these first terms have little effect on the present IF $|\varphi |<1$. Else, it will diverge or become a random walk.
+
+> _'Every new value for our outcome variable $Y_t$ is calculated upon the previous one $Y_{t-1}$ with some coefficient $\varphi$. Therefore, there will always be at least some information of every lag included in the present-day prediction.'_  
+
+This is precisely why [__stationarity__](Stationarity.html) is an important prerequisite for AR(q) processes. If the series were to be non-stationary, the overall correlation for the chain of _k_ lags would always be high because every previous outcome is a really good indicator of what the next one will be like. If we don't deal with the absence of [__stationarity__](Stationarity.html), we end up missing out on the information of how things change throughout the evolution.
+
+
+
+### __1.3. Why an AR(1) Model is an MA($\infty$) Model__
+We established:
+
+* The current prediction $Y_t$ is, indirectly so, a product of all previous values of $Y$.
+* The MA(1) model predicts $Y_t$ on the basis of an independent shock in the mean of the previous lag $\varepsilon_{t-1}$.
+
+If we interpret every previous lag as an independent shock of the mean up to all possible $\infty$ lags, we can estimate $Y_t$ using MA($\infty$) in the exact same way as we did using AR(1). Transforming an infinite geometric lag model to a finite model with lagged dependent variable is known as the __Koyck Transformation__. A more comprehensive explanation is provided on the page about [__invertibility__](Invertibility.html).
+
 
 ***
 
-## __Case example__
-
-```{r library, message=FALSE, results='hide'}
+## __2. Practical Example__
+### __2.1. Plotting the Time Series Data__
+```{r library, message=FALSE, results='hide', echo=FALSE}
 library(FitAR)
 library(forecast)
 library(tseries)
@@ -38,20 +84,33 @@ library(astsa)
 library(lmtest)
 ```
 
-```{r read file}
-food.df <- read.csv("SLIM0405DataSeries.csv")
+```{r read file, echo=FALSE}
+food.df <- read.csv("../SLIM0405DataSeries.csv")
 ```
 
 ```{r }
 plot(food.df[,c(1)],food.df[,c(2)], type="l", col="red", lwd=1, xlab="weeks", ylab="sales", main="Volume sales over time")
 ```
 
-### Augmented Dickey-Fuller for Stationarity
+### __2.2. Testing for Stationarity__
+In the previous section, we established that stationarity is an important prerequisite for AR(q) processes. There are several options for statistical tests in R.
+
+#### __2.2.1. Augmented Dickey Fuller Test__ 
 ```{r }
 adf.test(food.df[,c(2)])
 ```
 
-### ACF & PACF
+### __Phillips-Perron Test__
+```{r }
+pp.test(food.df[,c(2)])
+```
+
+### __Kwiatkowski-Phillips-Schmidt-Shin (KPSS) test__
+```{r }
+adf.test(food.df[,c(2)])
+```
+
+### __ACF & PACF__
 We can recognize MA(1) by observing the ACF and PACF.
 
 * Theoretical ACF has exponential decay
