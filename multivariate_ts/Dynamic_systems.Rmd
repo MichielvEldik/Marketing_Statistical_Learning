@@ -1,0 +1,46 @@
+---
+title: "Multiple Time Series / Full Dynamic Systems"
+output: html_document
+---
+
+## __1. Conceptual Background__
+### __1.1. What are they?__
+A dynamic system is a system of multiple time series equations. It allows for analysis of feedback effects over time. Whereas transfer functions, i.e. multivariate time series techniques, can only measure one-directional cuasal flows, full dynamic systems can measure multiple-directions.
+
+### __1.2. Marketing context__
+By using dynamic system of equations, we can account for things such as...
+* reactions to marketing actions of performance
+* reactions to marketing actions of other marketing actions
+* reactions to marketing actions of competitors' marketing actions and performance
+
+* reactions of marketing actions to performance
+* reactions of marketing actions to other marketing actions
+* reactions of marketing actions to competitors' marketing actions and performance
+
+Usually, multiple time series models perform better than multivariate time series models because they 
+
+
+## __2. Six methodological steps to Multiple Time Series__
+
+#### __1. Granger Causality Test__
+Which variables are temporally causing whch other variables?
+
+#### __2. Unit Root & Cointegration__
+ARe variables stationary or evolving? Are they evolving in a long-term equilibrium? Whereas we usually analyze __non-stationary individual series__ using differences, for __multiple series__ it's a little bit different. We actually __don't__ want to apply differencing because we would discard valuable information. We just want to make sure that the E__equilibrium error $\varepsilon$ is stationary. In this manner, we can accuartely predict variable $y$ with variable $x$.
+
+#### __3. Model of Dynamic System__
+How do marketing and performance interact in the short and long run, taking to account the unit root and cointegration results?
+
+#### __4. Policy Simulation Analysis__
+What is the dynamic impact of marketing on performance? Which actors drive the dynamic impact of marketing?
+
+#### __5. Drivers of Performance__
+What is the importance of each driver's past in explaining performance variance?
+
+#### __6. How do model results yield advice to the policy makers?__
+
+
+## __3. Dynamic Systems in R__
+
+
+_to be continued_

@@ -4,40 +4,24 @@ title: "Autoregressive model"
 output: html_document
 ---
 ***
-## __1. Conceptual Background__
-### __1.1. AR(q) Model__
+# __The Concept of AR processes__
+## __1.1. AR($q$) Model__
 An autoregressive model is a model where the outcome varibale depends linearly on its previous values and on a stochastic term which is imperfectly predictable. __AR(1)__ is called the first order autoregressive process. The outcome variable in a first order AR process at some point in time t is related only to the time periods that are one period apart. __AR(1)__ difference equation looks as follows:
 $$y_t = \delta + y_{t-1} + \varepsilon_t$$
 
 The __AR(p)__ model establishes that a realization at time t is a linear combination of the p previous realization plus some noise. It thus has multiple carryover coefficients instead of just one.
 $$X_t = \delta + \sum_{j=1}^{p}\varphi_jX_{t-j}+\varepsilon_t$$
 
-#### __1.1.1. Key Assumptions__
+### __1.2. Key Assumptions__
 
 * Errors are independently distributed with a normal distribution that has a 0 mean. $w_t \overset{iid}{\sim} N(0, \sigma^2_w)$
 * Properties of the errors $\varepsilon$ are independent of _Y_
+* No outliers
 * Mean $\mu$ of the time series is constant over time, refute $|\varphi|<1$ ([__stationarity__](Stationarity.html))
 * Variance $\sigma$ of the series is constant over time $|\varphi| \neq 1$ ([__stationarity__](Stationarity.html)) 
-* There should be no seasonal component ([__stationarity__](Stationarity.html))
+* There should be __no seasonal component__ ([__stationarity__](Stationarity.html))
 
-
-#### __1.1.2. Sample Autocorrelation Function (ACF)__
-In time series analysis, __autocorrelation__ (a.k.a. __serial correlation__ & __autocovariance__) is the similarity between observations as a function of the lag time between them. You can approach the concept by thinking of regular [variance](../variance.html) but instead of having two different variables, you use the same variable and compare the values in different time periods $Y_t$ and $Y_{t-1}$. A Pearson Correlation test is used to calculate correlations. The formula for ACF is stated as follows:
-
-$$r_{k} = \frac{\sum_{i=1}^{N-k}(Y_{i} - \bar{Y})(Y_{i+k} - 
-         \bar{Y})} {\sum_{i=1}^{N}(Y_{i} - \bar{Y})^{2} }$$
-
-For example, the autocorrelation for $Y$ with lags $k=2$ will take into account the correlation between $Y_t$ and $Y_{t-1}$; $Y_{t-1}$ and $Y_{t-2}$; $Y_{t}$ and $Y_{t-2}$. So both the indirect correlations and the direct correlation make up autocorrelation. The autocorrelation function has two main purposes:
-
-* To detect non-randomness in data.
-* To identify an appropriate time series model if the data are not random.
-* To identify the order of an [__MA(q) model__](MA_model.html)
-
-#### __1.1.2 Partial Autocorrelation Function (PACF)__
-The partial autocorrelation function only cares about the __direct__ correlation between $Y_t$ and $Y_{t-1}$. In the case of PACF, all lags are accounted for in regressing $Y_t$. In this manner, their confounding impact is controlled for, exposing only the direct correlation of $Y_{t-q}$ with $Y_t$.  It is useful in __determining the order of an AR(q) model__ for this precise reason. We want to get an 'isolated' perspective of how well each lag $k$ in time helps to predict $Y_t$. 
-
-
-### __1.2. The 'Long Memory' Model__
+### __1.3. The 'Long Memory' Model__
 An AR model is a long memory model because of the recursion that goes back until the beginning of the series. Today depends on the day before, which depends on the day before that, which depends on the day before that... etc. Let's say we have the following equation for two terms with AR process.
 <br>
 
@@ -60,19 +44,43 @@ The effects of these first terms have little effect on the present IF $|\varphi 
 
 This is precisely why [__stationarity__](Stationarity.html) is an important prerequisite for AR(q) processes. If the series were to be non-stationary, the overall correlation for the chain of _k_ lags would always be high because every previous outcome is a really good indicator of what the next one will be like. If we don't deal with the absence of [__stationarity__](Stationarity.html), we end up missing out on the information of how things change throughout the evolution.
 
+### __1.4. When is an AR($q$) Process Present and at what order?__
+
+An __AR($q$)__ process is present when the [__autocorrelation__](ACF_PACF.html) between $Y_t$ and each previous lag decays slowly. This makes sense because the __AR($q$)__ model is built on the idea that each previous lag has a part in predicting the following lag. Every lag in the model is used (to some extent) to predict $Y_t$. To predict $Y_t$, the previous lag $Y_{t-1}$ is used directly, but all other possible lags $Y_{t- (>1)}$ are used indirectly since $Y_{t-1}$ was predicted using $Y_{t-2}$, which was predicted using $Y_{t-3}$, ..., etc. It's like a chain reaction! The ACF decays as lags increase because each incremental lag will cause the impact of the value at that lag ($Y_{t-x}$) to be *less direct* in a sense. Please note: __this under the assumption that $|\varphi| < 1$__.
+
+The __order__ of an __AR($q$)__ process is a representation of how many lags $Y_{t-x}$ in the total time series are able to explain $Y_t$ in a __unique manner__. For an __AR($q$)__ process to be present, there must be at least one lag $Y_{t-x}$ that can explain $Y_t$. If this is not the case, The time seires is simply [__white noise__](White_Noise.html).
+
+The PACF ([__partial autocorrelation__](ACF_PACF.html)) is a useful way to constitute how many lags are seperately useful in predicting $Y_t$. That's because the PACF controls for serial correlation. Thereby, we get to see the 'isolated' correlation between $Y_t$ and $Y_{t-x}$. Naturally, each lag will be related to $Y_t$ because an __AR($q$)__ process works like a chain reaction whereby the value of $Y$ at any lag will always be a product of the previous values of $Y$. The PACF ([__partial autocorrelation__](ACF_PACF.html)) removes this chain effect by statistically controlling for it. In this manner, we discover the so-called __order__ of the __AR($q$)__ process.
+
+> _'Just because the sales amount of two days ago $Y_{t-2}$ is related to the sales amount of today $Y_t$, does not mean that it helps in predicting today's sales amount $Y_t$ in a __different way__ than does yesterday's sales amount $Y_{t-1}$, or any other lag $Y_{t-x}$ for that matter. That's why a PACF is useful in determining the order of an AR($q$) process.'_
 
 
-### __1.3. Why an AR(1) Model is an MA($\infty$) Model__
-We established:
 
-* The current prediction $Y_t$ is, indirectly so, a product of all previous values of $Y$.
+### __1.5. Why and How an AR(1) Model is an MA($\infty$) Model__
+There are two important parts in understanding how this works:
+
+* In an __AR($q$)__ Process, the current prediction $Y_t$ is indirectly a product of all previous values of $Y$.
 * The MA(1) model predicts $Y_t$ on the basis of an independent shock in the mean of the previous lag $\varepsilon_{t-1}$.
 
 If we interpret every previous lag as an independent shock of the mean up to all possible $\infty$ lags, we can estimate $Y_t$ using MA($\infty$) in the exact same way as we did using AR(1). Transforming an infinite geometric lag model to a finite model with lagged dependent variable is known as the __Koyck Transformation__. A more comprehensive explanation is provided on the page about [__invertibility__](Invertibility.html).
 
+# __2. Practical Relevance__
+## __2.1. The good__
+
+AR models are built on the premise that the future will resemble the past. Hence, it's nickname 'The Long Memory Model'. Thus, if you are able to quantify relevant aspects of the past well, an AR model can be used to predict the future.
+
+> _'AR models are good at capturing things from the past that continue into the future.'_ 
+
+An example is advertising. You advertisements of today will not only affect your sales of tomorrow. Advertising also has a more subconscious and indirect effect. Exposure to many advertisements in the past will make the brand more salient to consumers, which positively affects their attitude and behaviour with regard to your brand. AR models are built to capture such processes.
+
+## __2.1. The Bad__
+Its greatest strength can be considered its greatest limitation. The AR model assumes that past changes in ($Y_{t-x}$) at any previous point in time are always going to have a lasting impact on future values of $Y$. Even long after the changes have occurred, at least a fraction of this change will be present in the overall prediction of a future $Y$. This is totally fine if the exogeneous variable that causes changes in values for the predicted variable $Y$ (variables outside of the model) - such as sales - truly has a lasting impact over time. However, this is not always the case! 
+
+> _'In life, things sometimes happen arbitrarily and the fact that these things happen don't carry any significant meaning in predicting the future.'_
+
+An example is competitor out-of-stocks. It can happen that your major competitor has just experienced a supply-chain crisis and cannot provide its customers with products. These customers will temporarily buy from you, causing a spike in sales until your competitor fixed its problems. Fair enough, some customers might like your products and decide to stick around. However, this is a one time thing. After your competitor is back in business, there will likely not be a structural increase in sales to the same extent as during the months in which the competitor's crisis had occurred. An __AR($q$)__ model does not allow for this distinction and would hence become less accurate if these 'random shocks' were not treated as 'random'. This is were [__MA models__](MA_model.html) come in handy!
 
 ***
-
 ## __2. Practical Example Using R__
 ### __2.1. Plotting the Time Series Data__
 ```{r library, message=FALSE, results='hide', echo=FALSE}
@@ -84,6 +92,11 @@ library(aTSA)
 library(astsa)
 library(lmtest)
 ```
+
+```{r }
+getwd()
+```
+
 
 ```{r read file, echo=FALSE}
 food.df <- read.csv("../SLIM0405DataSeries.csv")
@@ -111,7 +124,7 @@ pp.test(food.df[,c(2)])
 adf.test(food.df[,c(2)])
 ```
 
-#### __2.2.4. determining type and order with ACF & PACF__
+#### __2.3. determining type and order with ACF & PACF__
 We can recognize MA(1) by observing the ACF and PACF.
 
 * Theoretical ACF has exponential decay
@@ -146,7 +159,7 @@ bartry6 = t(bartry5)
 barplot(bartry6, ylim = c(-1,1), main = "ACF (red) and PACF (grey) function", col = c("red", "grey"), beside = TRUE)
 ```
 
-### __auto.arima test__
+### __2.4. auto.arima test__
 ```{r }
 foodsel = food.df[,c(2)]
 tsfoodsel = as.ts(foodsel)

@@ -1,0 +1,13 @@
+---
+title: "Spurious Regression"
+output: html_document
+---
+
+In statistics, a spurious relationship or a spurious correlation is a mathematical relationship in which two variables are associated __but not__ causally related. This can be due to...
+
+* coincidence
+* The presence of a confounder.
+
+In time series, there is a classical example of spurious regression. When two time series are both non-stationary and we would cross-correlate them,it would seem as if they are really well correlated since they both move in the same direction over time. However, there may be many reasons why this is the case. Until this stationarity.
+
+An example of a spurious relationship can be seen by examining a city's ice cream sales. These sales are highest when the rate of drownings in city swimming pools is highest. To allege that ice cream sales cause drowning, or vice versa, would be to imply a spurious relationship between the two. In reality, a heat wave may have caused both. The heat wave is an example of a hidden or unseen variable, also known as a confounding variable.

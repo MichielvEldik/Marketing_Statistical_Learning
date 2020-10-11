@@ -1,0 +1,98 @@
+---
+title: "Intervention_Analysis"
+output: html_document
+---
+
+## __Intervention Analysis__
+Suppose that at lag $t = T$ where $T$ is known, there has been some sort of intervention to a time series. An intervention can be a change to a procedure, or law, or policy. We want to estimate how much the intervention has changed the series. For example, a new speed limit is implemented and we want to know how much this new speed limit has affected accident rates.
+
+Suppose we have the following ARIMA model with no intervention:
+$$x_t = \mu + \dfrac{\Theta(B)}{\Phi(B)}\varepsilon_t$$
+* $\Theta(B)$ being the MA polynomial;
+* $\Phi(B)$ being the AR polynomial
+* $\varepsilon$ being the error term
+
+Now, let $z$ equal the amount of change at time $t$ that can be attributed to the intervention. By definition, $z_t = 0$ before the intervention at time $T$. However, the value $z_t$ may (or may not) be 0 after time $T$. This can be expressed in the following model:
+
+$$x_t = \mu + z_t + \dfrac{\Theta(B)}{\Phi(B)}\varepsilon_t$$
+
+## __Patterns for the intervention analysis__
+
+* Permanent constant change to the mean to each value after time $T$.
+* A brief constant change to the mean level after which there is no effect.
+* Gradual increase or decrease to a new mean level.
+* Initial change followed by gradual return to the no change state.
+
+## __Intervention Analysis in R__ 
+
+```{r read file, echo=FALSE, message=FALSE}
+library(FitAR)
+library(forecast)
+library(tseries)
+library(gplots)
+library(aTSA)
+library(astsa)
+library(lmtest)
+foodcorp.df <- read.csv("../SLIM0405DataSeries.csv")
+```
+
+```{r }
+plot(foodcorp.df[,c(1)],foodcorp.df[,c(9)], type="l", col="red", lwd=5, xlab="weeks", ylab="sales", main="Volume sales over time", ylim = c(0,100))
+
+```
+## Step 1: Observe ACF and PACF 
+However, __we will only do so for the period before the intervention__. In this case, it's up to approx. week 144.
+
+```{r }
+foodsel = foodcorp.df[,c(9)]
+foodsel_x = foodcorp.df[,c(1)]
+foodsel2 = foodsel[c(1:144)]
+foodsel2_x = foodsel_x[c(1:144)]
+foodacf = acf(foodsel2, lag.max = 10)
+foodpacf = pacf(foodsel2, lag.max = 10)
+```
+
+```{r }
+plot(foodsel2_x, foodsel2, type="l", col="red", lwd=5, xlab="weeks", ylab="sales", main="Volume sales over time", ylim = c(0,100))
+```
+
+
+From the looks of it, we seem to have an AR(1) process. There is a single spike in the PACF whilst the ACF plot is slowly decaying.
+
+## Step 2: Observe Unit Roots
+```{r }
+adf.test(foodsel2)
+pp.test(foodsel2)
+```
+
+
+## Step 3: Fit the AR(1) model using Ordinary Least Squaree regression
+
+```{r }
+tssales = as.ts(foodsel2)
+# AR is based on its previous value so one lag is required
+tsfoodsel3 = ts.intersect(tssales,tssales1=lag(tssales,-1))
+
+m1 <-lm(tssales~tssales1, data=tsfoodsel3, na.action = NULL)
+summary(m1)
+```
+
+## The same model can be fit using auto.arima but it gives different coefficients.
+```{r }
+auto.arima(tssales, test = c("adf"), trace = TRUE)
+```
+
+## Modelling the interventions
+
+```{r }
+tsfoodsel2 = as.ts(foodcorp.df)
+tssales = tsfoodsel2[,c(9)]
+tsintervent1 = tsfoodsel2[,c(13)]
+tsintervent2 = tsfoodsel2[,c(14)]
+tsfoodsel4 = ts.intersect(tssales, tssales1=lag(tssales,-1), tsintervent1, tsintervent2)
+
+m2 <-lm(tssales~tssales1 + tsintervent1 + tsintervent2, data=tsfoodsel4, na.action = NULL)
+summary(m2)
+```
+
+

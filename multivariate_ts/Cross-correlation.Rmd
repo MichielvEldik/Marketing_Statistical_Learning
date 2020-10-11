@@ -1,0 +1,20 @@
+---
+title: "Cross-correlation function"
+output: html_document
+---
+
+THe Cross correlation function shows the measure of similarity of two seperate time series as a function of the displacement (lag) of one relative to the other. 
+
+
+It's an extension of the ACF to multiple series. The interpretation is actually quite similar:
+
+* Spikes means moving average behaviour
+* Decay means autoregressive behaviour
+
+## Important
+
+The __ARIMA(p, d, q)__ structure of the equations depends on included x-variables.
+
+E.g., sales series showing seasonality will require different ARIMA structure depending on whether or not accounted for in the model by a seasonal effect variable(s).
+
+

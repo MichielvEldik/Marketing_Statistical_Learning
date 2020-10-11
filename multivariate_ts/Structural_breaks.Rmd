@@ -1,0 +1,9 @@
+---
+title: "Structural Breaks"
+output: html_document
+---
+
+Therefore, we must routinely test for structural stability. A structural break is when an unexpected change over time in the parameter(s) of a regression model occurs. This can lead to forecasting errors and unreliability of the model in general.
+
+The __Chow test__ is oftentimes used to test for a single break in mean at a known period $K$.
+

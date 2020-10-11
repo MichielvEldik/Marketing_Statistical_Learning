@@ -1,0 +1,7 @@
+---
+title: "Convolution"
+output: html_document
+---
+
+https://www.youtube.com/watch?v=MQm6ZP1F6ms
+

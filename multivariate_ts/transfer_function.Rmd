@@ -9,6 +9,7 @@ Transfer Function Analysis is about relating multiple series to each other. For 
 
 The general dynamic regression model is formally noted as:
 $$y_t = \mu + v_k(B)x_t+\varepsilon_t$$
+
 The *Beta coefficient* is identified by:
 $$(B)^ix_t = x_{t-i}$$
 
@@ -23,9 +24,5 @@ But imagine if we had many lagged terms included, we could summarize it using th
 
 * Transfer function is also called *response function*
 * Transfer function coefficients are also called *impulse response weights*
-
-## What is the lag distirbution?
-The lag distribution is a graph with Beta values for all lags of a variable (y-axis), over its corresponding lag value (x). It tells us the impact of changes in independent variables in each period. 
-
 
 

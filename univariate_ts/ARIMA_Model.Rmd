@@ -1,0 +1,8 @@
+---
+title: "ARIMA"
+output: html_document
+---
+
+An ARIMA model is a combination of the AR(q) and MA(q) model with additional *differencing*, which is a method for transforming a univariate time series. How does that work? Well it's done by looking at the difference in $Y$ rather than the value of $Y$. In this manner, we can observe how a time series following a certain trend - be it upward or downward - varies at different points in time. In other words, we are looking at changes happening within the trend.
+
+

@@ -3,18 +3,26 @@ title: "Moving Average model"
 output: html_document
 ---
 ***
-## __Introduction__
-An MA model (*short-memory model*) forecasts a series based solely on the past errors in the series - called error lags. Our model depends not on previous values of Y, but on errors from the previous lag. The following equation basically states: The current value for Y, is dependent on the previous error + some current error."
+## __1. Conceptual Background__
+### __1.1. MA(q) Model__
+An __MA(q)__ model forecasts the outcome variable $Y_T$ based solely on the past errors in the series - called __error lags__. Last month you made an estimation of sales amount. The degree to which you were wrong last month will be used to estimate the sales amount for next month. The sales amount itself is not used at all in our predictions. This is one of the main characteristics that sets MA(q) apart from [__AR(q)__](AR_Model.html) models. This story can be summarized in the following equation for an __MA(q)__ model in its most basic form, the __MA(1)__ model. 
 
 $$Y_t = \mu + \theta\varepsilon_{t-1} + \varepsilon_t$$
 
-### The meaning of error
+* $Y_t$ = Prediction of the outcome variable at lag $t$
+* $Y_{t-1}$ = the difference between yesterday's predicted and actual value of $Y_t$ (i.e. 'yesterday's wrongness')
+* $\theta$ = The weight of yesterday's wrongness in our prediction of $Y_t$.
+* $\mu$ = The mean of the time series. Oftentimes it's set at 0. 
+* $\varepsilon_t$ = Today's wrongness, which of course we don't know yet and can only fill in after discovering $Y_t$.   
+
+#### __1.1.2. The meaning of 'error'__
 But what does an error really mean? Well let's pretend that you have two lines in a time series. One line is your predicted Sales. One is the actual sales made. Essentially, it is how wrong you were yesterday, that is affecting the prediction of tomorrow. The error reflects some sort of external shock due to some hidden factors (in the sense that they are not included in the model). Essentially, you can think of lagged errors as one long term effect minus some slightly less long term effect which gives us a short term effect.
 
-### But how can you predict the first observation then?
-If you have no prediciton for the first observation, how can you start? Well, typically you would start out with the mean of the time series. *If your time series is long enough, it really won't matter where your starting point is*.
+#### __1.1.3. How can one predict the first observation if there was no error?__
+If you have no prediction for the first observation, how can you start? Well, typically you would start out with the mean of the time series. *If your time series is long enough, it really won't matter where your starting point is*.
 
-### Why MA models are "short-memory" models
+
+### __1.2. The 'Short Memory Model'__
 One of the reasons why we shouldn't care about where to begin is the fact that MA is a *short memory model*. This means that error's don't last long in the future.
 
 * In AR(1) models, the effect of shocks that happen long ago have little effect on the present if $|\theta| < 1$. 
@@ -30,7 +38,7 @@ As you can see, the error from yesterday has *no part* in predicting the error f
 
 With Autoregressive models if we look back in time, the first observation still maters (even if this is a very tiny amount). For MA models, there will be literally *NO* effect if you go back in time far enough.
 
-### Some facts on MA processes
+### __1.3. Some facts on MA processes__
 An MA process...
 
 * ACF has only one spike
@@ -40,18 +48,23 @@ An MA process...
 * Mean is time-independent. Series return to their historical level
 * variance is time-independent. Series return to their historical level
 
-### Reasons for MA behaviour in marketing
+### __1.4. Reasons for MA behaviour in marketing__
 There can be either a positive or negative MA behavior in marketing. __Postive behavior__: Higher beer sales today due to unexpected heat wave, but also likely tomorrow as heat wave stays on. __Negative relation__: Equilibrium-seeking behaviour of supply and demand such as natural disaster, coronavirus, et cetera. 
 
+### __1.5. When is an MA($q$) Process Present and at what order?__
+Contrary to __AR($q$) Processes__, a purely __MA($q$)__ process can be identified using the autocorrelation function. A purely __MA($q$)__ process is a process in which _no future value can be predicted by its previous value_. Think of it like the baseline of a pure __MA($q$)__ process is white noise with one 'random' shock that deviates substantially and significantly from this white noise series. This means that for the one lag in which such a shock occurs, due to the local variance there will actually be significant autocorrelation. Thus we can state that for an $MA(q)$, $\rho_k=0$ for all $k > q$. 
 
-### __What does the $\theta$ coefficient mean specifically?__
+
+### __1.6. Why and How an AR(1) Model is an MA($\infty$) Model__
+Invertibility requires $0 < \varphi < 1$. 
+
+_More to come..._
 
 ***
 
-## __Case example__
-
-
-```{r library, message=FALSE, results='hide'}
+## __2. Case example__
+### __2.1. Plotting the Time Series Data__
+```{r library, message=FALSE, results='hide', echo=FALSE}
 library(FitAR)
 library(forecast)
 library(tseries)
@@ -60,21 +73,22 @@ library(aTSA)
 library(astsa)
 ```
 
-```{r read file}
-food.df <- read.csv("SLIM0405DataSeries.csv")
+```{r read file, echo=FALSE}
+food.df <- read.csv("../SLIM0405DataSeries.csv")
 ```
 
 ```{r, fig.align = 'center'}
 plot(food.df[,c(1)],food.df[,c(3)], type="l", col="red", lwd=1, xlab="weeks", ylab="sales", main="Volume sales over time")
 ```
-
-### Augmented Dickey-Fuller for Stationarity
+### __2.2. Testing for Stationarity__
+Not a requirement per se.
+#### __2.2.1. Augmented Dickey Fuller Test__
 
 ```{r }
 adf.test(food.df[,c(3)])
 ```
 
-### ACF & PACF
+#### __2.2.2. determining type and order with ACF & PACF__
 We can recognize MA(1) by observing the ACF and PACF.
 
 * Theoretical ACF has only one spike
@@ -115,7 +129,7 @@ barplot(bartry6, ylim = c(-1,1), main = "ACF (red) and PACF (grey) function", co
 
 
 
-### auto.arima will output ARIMA(0, 0, 1) for MA(1) Processes
+#### __auto.arima test__
 ```{r }
 foodsel = food.df[,c(3)]
 tsfoodsel = as.ts(foodsel)

@@ -3,7 +3,8 @@ title: "SARIMA"
 output: html_document
 ---
 
-*On top of the *Seasonality* is a repeated pattern in a *year* that happens over and over and over again. That means that on top of your ARIMA model, you may have a seasonal component. $ARIMA(p, d, q)(P, D, Q)_m$. If it takes place over longer periods than a year, it is called *cycle*.
+## __The Concept of Seasonality__
+*Seasonality* is a repeated pattern within a *year* that occurs at specific, regular intervals. Each year, sales of video games may exhibit a sharp spike in volume during the period of Christmas. That means that on top of your ARIMA model, you may have a seasonal component which can be modeled using $ARIMA(p, d, q)(P, D, Q)_m$. If it takes place over longer periods than a year, it is called *cycle*. Read more about time series patterns in the [patterns section](Patterns_ts.html)
 
 * P = number of seasonal autoregressive components
 * D = number of seasonal differences
@@ -16,10 +17,21 @@ The basic idea is that many sales series show typical seasonal patterns over the
 
 An example: $ARIMA(1, 1, 1)(1, 1, 1)_4$ says that I want to integrate my model (d) by one period. And also, I want to integrate based on 4 periods in the past. This would go for MA and AR as well.
 
-## How To Identify and Remove Seasonality?
+## __How To Identify and Remove Seasonality?__
 It's subjective. The best way is to plot your data and have a look. It can be dealt with by:
+
 * Dummy variables
-* Deseasoning
+* De-seasoning / Decomposition
 * Sinus and Cosinus functions (more advanced)
 
 
+```{r }
+library(forecast)
+arima <- arima.sim(model = list(order = c(0, 1, 0)), n = 100)
+plot(arima)
+model <- Arima(ts(rnorm(100),freq=4), order=c(1,1,1), seasonal=c(1,1,1),
+                 fixed=c(phi=0.5, theta=-0.4, Phi=0.3, Theta=-0.2))
+foo <- simulate(model, nsim=1000)
+  fit <- Arima(foo, order=c(1,1,1), seasonal=c(1,1,1))
+plot(foo)
+```

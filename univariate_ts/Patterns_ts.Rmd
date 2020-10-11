@@ -1,0 +1,33 @@
+---
+title: "Patterns in Time Series"
+output: html_document
+---
+## __1. Drift__
+Drift is an intercept (static) component in a time series. 
+
+$$y_t = c + \varphi y_{t-1} + \varepsilon_t$$
+
+
+## __2. Trend__
+A trend exists when there is a long-term increase or decrease in data. It is represented as a __time variant component__ $\delta t$. In other words, it can increase over time. 
+
+$$y_t = c + \delta\varphi y_{t-1} + \varepsilon_t$$
+
+### __2.1. Deterministic Trend__
+A deterministic trend can be expressed as follows: $y_t = \beta_0 + \beta_1 t + \eta_t$ where $\eta_t$ is an __ARMA process__. The deterministic trend is one that you can determine from the equation directly. 
+
+The deterministic trend for a time series model can be expressed as $y_t = ct + \varepsilon$ where expected value $E[y_t] = ct$ with constant variance  $Var(y_t) = \sigma^2$ and normally distributed errors $\varepsilon - iid(0,\sigma^2)$. This will produce a straight line in time with some minor fluctuations.
+
+### __2.2 Stochastic Trend__
+A stochastic trend is one that can change in each lag because of the random component of the process. It can be expressed as $y_t = c + y_{t-1} + \varepsilon_t$ with a non-constant variance (variance as a product of time) $Var(y_t) = t\sigma^2$ because the random component is in this case contingent on time ($\varepsilon_t$). In other words, variance will increase over time. In this sense, it's quite similar to a  [random walk with drift](./index.html) but the error term $\varepsilon$ is in this case not white noise but an __ARMA__ process because it moves in a certain direction rather than being completely random.    
+
+## __3. Seasonality__
+Seasonality occurs when a time series is affected by seasonal factors such as the*Seasonality* is a repeated pattern within a *year* that occurs at specific, regular intervals. Each year, sales of video games may exhibit a sharp spike in volume during the period of Christmas. That means that on top of your ARIMA model, you may have a seasonal component which can be modeled using $ARIMA(p, d, q)(P, D, Q)_m$
+
+## __4. Cycles__ 
+Cyclical behaviour is when data rises or falls at a non-fixed frequency over a longer time period than two years. Cycliclal behaviour is often due to the fluctuating state of the economy. It's similar to a trend but for an extensive period of time.
+
+
+
+
+

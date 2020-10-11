@@ -1,0 +1,7 @@
+---
+title: "Koyck Model"
+output: html_document
+---
+
+Under construction. Ask Gijsenberg about this.
+

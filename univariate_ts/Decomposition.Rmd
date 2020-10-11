@@ -1,0 +1,13 @@
+---
+title: "Decomposition"
+output: html_document
+---
+
+Time series decomposition involves thinking of a series as a combination of level, trend, seasonality, and noise components. It's useful because it provides abstractions which helps to give a clearer view of what's going on. It helps in interpretation. 
+
+A given time series is thought to consist of three __systematic components__ and 1 __non-systematic component__. These __systematic components__ have consistency and can be described or modeled. The __non-systematic component__ cannot be directly modeled. To recap, a time series is compiled of:
+
+* __level__: the average value in the series
+* __Trend__: The increasing or decreasing value in the series.
+* __Seasonality__: The repeating short-term cycle in the series.
+* __Noise__: The random variation in the series.

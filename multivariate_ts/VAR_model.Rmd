@@ -1,0 +1,39 @@
+---
+title: "Vector Autoregression"
+output: html_document
+---
+
+
+
+The vector autoregressive model is a multivariate extension of the __ARMA model__ with MA terms inverted and moved to the other side. The VAR model is useful when one is interested in predicting __multiple time series variables__ a.k.a. multiple __endogeneous variables__ using a single model. In a VAR model we regress a vector of time series variables on lagged vectors of these variables. Hence its name _vector_ autoregression. 
+
+> 'VAR models = AR model + MA model + DVs' 
+
+## Example of VAR(1) model
+
+Let's say we are fruit salesmen. We sell apples and bananas. We will have four different variables:
+
+* Apple sales today $y_{1, t}$
+* Apple sales last month $y_{1, t-1}$
+* Banana sales today $y_{2, t}$
+* Banana sales last month $y_{2, t-1}$
+
+Now we already know that apple sales of last month will help us explain apple sales of this month. Also, we know that banana sales of last month will help us explain banana sales of this month. However, banana sales of last month may also convey something about apple sales of this month. And similarly, apple sales of last month may say something about banana sales of this month. For example, if banana sales were up last month, it may be because people are really into bananas nowadays. Perhaps because it was found that they boost your health. So in that case, they are related to each other. This can be represented as the following system of equations:
+
+$$y_{1,t} = c_1 + a_{1,1} y_{1, t-1} + a_{1,2} y_{2, t-1} + \varepsilon_{1, t}$$
+$$y_{2,t} = c_2 + a_{2,1} y_{1, t-1} + a_{2,2} y_{2, t-1} + \varepsilon_{2, t}$$
+
+This can also be represented using matrix vector multiplication:
+$$\left[\begin{array}{ccc} y_{1t} \\ y_{2t} \end{array}\right] = \left[\begin{array}{ccc} c_{1} \\ c_{2} \end{array}\right] + \left[\begin{array}{ccc} a_{1,1} & a_{1,2} \\ a_{2,1} & a_{2,2}  \end{array}\right] \left[\begin{array}{ccc} y_{1, t-1} \\ y_{2, t-1} \end{array}\right] + \left[\begin{array}{ccc} \varepsilon_{1, t} \\ \varepsilon_{2,t} \end{array}\right]$$
+
+## Assumptions
+
+* Error terms must be i.i.d. etc.
+
+
+## __Strucutral Form__
+
+## __Reduced Form__
+
+## __Lag Selection__
+

@@ -1,0 +1,86 @@
+---
+title: "Cointegration"
+output: html_document
+---
+
+## 1. The Concept of Cointegration 
+If we have non-stationary time series, it's not a good idea to regress them on one another. Even though the processes might be completely seperate from each other, they will still be significantly correlated with each other simply because both variables are increasing over time. This leads to [spurious regression](Spurious_regression.html). So keep it in mind as an important rule: __A basic assumption of the regression modoel is that the error term series is a white noise series.__
+
+
+The idea with cointegration is to align two time series such that their relative distance tends to be constant. In other words, they are evolving in a similar manner. For example, we have an evolutionary time series $y_t$ with $I(1)$ and another evolutionary time series $x_t$ with $I(1)$. Now imagine that we can multiply $x_t$ by some coefficient $\beta$ such that $y_t - \beta x_t = I(0)$. In other words, if there is a coefficient to be found by which time series $x_t$ can be multiplied such that the relative distance between both time series is constant over time, the two time series are said to be __cointegrated__. __Some pairs of time sieres can be cointegrated and some simply can't.__ 
+
+> Insert picture here
+
+In economic terms, the fact that two variables are __cointegrated__ means that there is a __possibility__ of these two variables having a genuine relationship.
+
+## 2. Cointegration in Marketing
+#### 2.1. Cointegration among performance variables
+Monitor the evolution of one variable as it predicts the evolution of another - more interesting - variable. E.g., New brands likely have evolving situation in their early stages. One can monitor awareness and distribution if these were to be cointegrated with sales performance. In the later stages, when maturity is reached, we move into stationarity. Cointegration of such variables might erode and other variables can become interesting.
+
+#### 2.2. Cointegration among marketing variables
+Evolution of marketing mix variables that are moving systematically in same direction. E.g. raising/cutting budgets simultaneously across different marketing mix aspects. ALso, marketing investment evolution is systematically linked to evolution of competitors' marketing spend. E.g., emerging markets means a race for market share in. This will likely lead to escalatin in marketing spend by the different actors.
+
+#### 2.3. Cointegration between marketing and performance variables
+Oftentimes in marketing, the marketing or advertising budget is based on performance. Hence, performance and marketing budget are cointegrated. 
+
+
+## 3. Four long-term scenarios
+
+#### 3.1. Business as usual
+Stationarity marketing + stationary sales.
+
+* One-shot marketing campaigns having only a temporary effect
+* Most often observed scenario for established brands and markets
+
+#### 3.2. Hysterisis
+Stationary matketing, evolving sales
+
+* One shot marketing campaigns having permanent sales effects
+* You just found the holy grail of marketing!
+* Mostly for new brands/products/markets in growth stages
+
+It comes to show that how you represent your brand in these stages is crucial.
+
+#### 3.3. Escalation
+Evolving marketing, stationary sales
+
+* Continued marketing efforts having very little permanent sales effects
+* Typically in saturated markets. One man's gain is another man's loss. Worst scenario to be in!
+Examples include price wars and advertising wars. 
+
+#### 3.4. Evolving business
+Evolving marketing + evolving sales
+
+* Continued marketing efforts with permanent sales effects
+* increased marketing lifts the sales level, but has to be sustained to keep the sales level higher.
+
+
+## 4. Testing for cointegration
+### 4.1. Engle & Granger test
+
+* Use OLS to estimate the cointegration equation
+* test the error for evolution
+* __con__: Can be biased in small samples (not so much an issue nowadays)
+* __con__: Can only be used for situations with max 1 cointegrating vector
+
+### 4.2. Johansen's FIML test
+Mutlivariate version of Dickey-Fuller Test
+
+### 4.3. Johansen et al. (2002) test
+Allows for structural breaks in the relationship between variables.
+To be used when unit root tests show structural breaks in one or more variable. 
+
+### 4.5. Using common sense
+If one is stationary and the other isn't, there is no chance in cointegration at all.
+
+
+## 5. Can I still do stuff if cointegration is not possible?
+
+Yes, by using differencing.
+
+```{r }
+# Perform some of the tests
+getwd()
+```
+
+

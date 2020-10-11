@@ -1,0 +1,19 @@
+---
+title: "Autocorrelation"
+output: html_document
+---
+
+## __1. Sample Autocorrelation Function (ACF)__
+In time series analysis, __autocorrelation__ (a.k.a. __serial correlation__ & __autocovariance__) is the similarity between observations as a function of the lag time between them. You can approach the concept by thinking of regular [variance](../variance.html) but instead of having two different variables, you use the same variable and compare the values in different time periods $Y_t$ and $Y_{t-1}$. A Pearson Correlation test is used to calculate correlations. The formula for ACF is stated as follows:
+
+$$r_{k} = \frac{\sum_{i=1}^{N-k}(Y_{i} - \bar{Y})(Y_{i+k} - 
+         \bar{Y})} {\sum_{i=1}^{N}(Y_{i} - \bar{Y})^{2} }$$
+
+For example, the autocorrelation for $Y$ with lags $k=2$ will take into account the correlation between $Y_t$ and $Y_{t-1}$; $Y_{t-1}$ and $Y_{t-2}$; $Y_{t}$ and $Y_{t-2}$. So both the indirect correlations and the direct correlation make up autocorrelation. The autocorrelation function has two main purposes:
+
+* To detect non-randomness in data.
+* To identify an appropriate time series model if the data are not random.
+* To identify the order of an [__MA(q) model__](MA_model.html)
+
+## __2. Sample Partial Autocorrelation Function (PACF)__
+The partial autocorrelation function only cares about the __direct__ correlation between $Y_t$ and $Y_{t-1}$. In the case of PACF, all lags are accounted for in regressing $Y_t$. In this manner, their confounding impact is controlled for, exposing only the direct correlation of $Y_{t-q}$ with $Y_t$.  It is useful in __determining the order of an AR(q) model__ for this precise reason. We want to get an 'isolated' perspective of how well each lag $k$ in time helps to predict $Y_t$. 
