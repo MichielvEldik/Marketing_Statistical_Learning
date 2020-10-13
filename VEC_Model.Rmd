@@ -1,0 +1,33 @@
+---
+title: "VEC"
+author: "Michiel van Eldik"
+date: "10/13/2020"
+output: html_document
+---
+
+## __Dealing with non-stationarity__
+
+A basic condition for VAR is that all series are __stationary__, no unit roots allowed! 
+
+* If there are no unit roots, everything is fine and we include as levels
+* If there are series with a unit root...
+  * IF no cointegration, THEN include the evolving series in first differences AND stationary series in value levels
+  * IF there __is__ cointegration, THEN the __levels__ and __differences__ of the non-stationary variable in question contain interesting information on the relations.
+
+Hence, in that case we wouldn't want to use only the differences because in that way, we would lose this interesting information.
+
+So what to do then? Use a __Vector Error Correction Specification Model (VEC)__
+
+## __VEC__
+**We use a VEC when two or more series are (1) evolving, and (2) cointegrated.**
+
+Remember that Autoregressive processes in general require stationarity. We can deal with that by differencing BUT, not __In case of co-integration__.
+
+### __Equation__
+
+_Soon to come..._
+
+
+```{r }
+```
+

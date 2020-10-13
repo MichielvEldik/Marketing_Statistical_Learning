@@ -1,0 +1,145 @@
+---
+title: "Granger Causality"
+author: "Michiel van Eldik"
+date: "10/13/2020"
+output: html_document
+---
+
+## __The Concept__
+
+A vareiable _x_ is __Granger causing__ variable _y_ if knowing the past of _x_ improves our forecast of _y_ based on the past of _y_. In other words, a signal _x_ Granger causes a signal _y_ if past values of _x_ contain information that help to predict _y_ above and beyond the information contained in past values of _y_ alone. 
+
+It should be noted that changes in _x_ is the "ultimate" cause of variations in _y_. There could be a hidden variable _z_ that may in fact be causing both _x_ and _y_. So just keep in mind that Granger Causality does not necessarily constitute evidence for actual causality. In fact, there can never be enough evidence to support the claim of true causality. True causality is a deeply complicated and philosophical topic.
+
+Granger defined the causality relationship in two principles:
+* The cause happens prior to the effect
+* The cause has unique information about the future values of its effect.
+
+The equation looks as follows:
+
+_coming soon..._
+
+### __Choice of number of lags__
+The choice of an appropriate number of lags to include is important. It requires a good understanding of the situation at hand. What is reasonable?
+
+
+### __Granger Causality in marketing__
+
+* What marketing actions drive performance?
+* What social media metrics drive performance? (heavily debated issue)
+* Does offline marketing spending drive online marketing?
+* Do online social media metrics drive offline marketing?
+* Do manager base their marketing on performance feedback?
+  * positive feedback = better performance, better budget
+  * negative feedback = lower performance, higher need to invest
+
+* Do competitors base their decisions on each others' actions?
+
+## __The Case__
+A major European railway company wants to investigate the drivers of public transport usage. There are 2 types of travel:
+
+* Ticket-based: occasional, leisure oriented
+* Pass-based: regular, work-oriented
+
+What are the possible drivers?
+
+* Stepping stone theory: first tricket based, then moving to pass based
+* Spill over effect: pass-based travellers "advertising" to ticket-based travellers
+* Feedback effects through customer satisfaction
+
+The marketing efforts are:
+
+* Advertising
+* Promotional actions through the own channel 
+* retailers promotions
+
+Control variables:
+
+* Gasoline prices
+* Trend
+* Seasonality
+
+
+```{r }
+
+library(lmtest)
+library(vars)
+
+railways.df <-read.csv("../SLIM0607Railways.csv")
+```
+
+### __Plotting the variables__
+
+All series were log-transformed before plotting.
+
+```{r }
+plot(railways.df[,c(1)],railways.df[,c(2)], type="l", col="red", lwd=5, xlab="months", ylab="passkm", main="Pass-based travel over time")
+plot(railways.df[,c(1)],railways.df[,c(3)], type="l", col="red", lwd=5, xlab="months", ylab="ticketkm", main="Ticket-based travel over time")
+plot(railways.df[,c(1)],railways.df[,c(4)], type="l", col="red", lwd=5, xlab="months", ylab="satisfaction", main="Satisfaction over time")
+plot(railways.df[,c(1)],railways.df[,c(6)], type="l", col="red", lwd=5, xlab="months", ylab="advertising", main="Advertising over time")
+plot(railways.df[,c(1)],railways.df[,c(11)], type="l", col="red", lwd=5, xlab="months", ylab="adstock", main="Adstock over time")
+```
+
+### __Which series to test?__ 
+
+* Ticket-based travle, pass-based travel, and satisfaction may all influence each other. These series shopuld be tested!
+* In our case, advertising and promotion actions are decided at the beginning of the year. Not influenced by performance feedback
+
+#### __y = pass-based, x = ticket-based __
+Judging fromt he output below, there is some evidence that Granger Causality is present at 6 to 8 lags.
+```{r }
+grangertest(LNKMABOFIX2~LNKMLOSFIX2, order = 2, data = railways.df)
+grangertest(LNKMABOFIX2~LNKMLOSFIX2, order = 4, data = railways.df)
+grangertest(LNKMABOFIX2~LNKMLOSFIX2, order = 6, data = railways.df)
+grangertest(LNKMABOFIX2~LNKMLOSFIX2, order = 8, data = railways.df)
+```
+
+#### __y = pass-based, x = Satisfaction __
+Judging fromt he output below, there is no statistical evidence that Satisfaction G-causes pass-based travel
+```{r }
+grangertest(LNKMABOFIX2~LNAOAVERAGE_2, order = 2, data = railways.df)
+grangertest(LNKMABOFIX2~LNAOAVERAGE_2, order = 4, data = railways.df)
+grangertest(LNKMABOFIX2~LNAOAVERAGE_2, order = 6, data = railways.df)
+grangertest(LNKMABOFIX2~LNAOAVERAGE_2, order = 8, data = railways.df)
+```
+
+#### __y = Ticket-based, x = pass-based __
+Judging fromt he output below, there is no statistical evidence that Ticket-based is G-caused by pass-based
+```{r }
+grangertest(LNKMLOSFIX2~LNKMABOFIX2, order = 2, data = railways.df)
+grangertest(LNKMLOSFIX2~LNKMABOFIX2, order = 4, data = railways.df)
+grangertest(LNKMLOSFIX2~LNKMABOFIX2, order = 6, data = railways.df)
+grangertest(LNKMLOSFIX2~LNKMABOFIX2, order = 8, data = railways.df)
+```
+
+#### __y = Ticket-based, x = Satisfaction__
+Judging fromt he output below, there is statistical evidence that Ticket-based is G-caused by satisfaction.
+```{r }
+grangertest(LNKMLOSFIX2~LNAOAVERAGE_2, order = 2, data = railways.df)
+grangertest(LNKMLOSFIX2~LNAOAVERAGE_2, order = 4, data = railways.df)
+grangertest(LNKMLOSFIX2~LNAOAVERAGE_2, order = 6, data = railways.df)
+grangertest(LNKMLOSFIX2~LNAOAVERAGE_2, order = 8, data = railways.df)
+```
+
+#### __y = Satisfaction, x = Pass-based__
+Judging fromt he output below, there is statistical evidence that satisfaction is G-caused by pass-based travel.
+```{r }
+grangertest(LNAOAVERAGE_2~LNKMABOFIX2, order = 2, data = railways.df)
+grangertest(LNAOAVERAGE_2~LNKMABOFIX2, order = 4, data = railways.df)
+grangertest(LNAOAVERAGE_2~LNKMABOFIX2, order = 6, data = railways.df)
+grangertest(LNAOAVERAGE_2~LNKMABOFIX2, order = 8, data = railways.df)
+```
+
+#### __y = Satisfaction, x = ticket-based__
+Little evidence...
+```{r }
+grangertest(LNAOAVERAGE_2~LNKMLOSFIX2, order = 2, data = railways.df)
+grangertest(LNAOAVERAGE_2~LNKMLOSFIX2, order = 4, data = railways.df)
+grangertest(LNAOAVERAGE_2~LNKMLOSFIX2, order = 6, data = railways.df)
+grangertest(LNAOAVERAGE_2~LNKMLOSFIX2, order = 8, data = railways.df)
+```
+
+
+
+
+

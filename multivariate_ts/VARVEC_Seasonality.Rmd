@@ -1,0 +1,33 @@
+---
+title: "Seasonality_VARVEC"
+author: "Michiel van Eldik"
+date: "10/13/2020"
+output: html_document
+---
+
+## __Seasonality in VAR and VEC__
+
+It's typical marketing series to show seasonal patterns.
+
+How to deal with that?
+
+### __De-seasonalize__
+* Typical for macro-economics
+* Seasonality seens as contamination of "true" series
+* Many drawbacks
+
+In marketing, we don't deseasonalize but control for it in our models.
+
+### __Add seasonal control variables__
+
+These seasonal patterns are part of reality. We should not dismiss them.
+
+We have specified a sine and cosine function to be included. It's an elegant way of controlling for seasonality effects, only __consumes 2 degrees of freedom__.
+
+* Sine = high in spring, low in autumn
+* Cosine = high in winter, low in summer
+
+
+```{r }
+
+```

@@ -1,0 +1,20 @@
+---
+title: "FEVD"
+author: "Michiel van Eldik"
+date: "10/13/2020"
+output: html_document
+---
+
+## __FEVD Basic Idea__
+Forecast Error Variance Decomposition
+
+What part of the forecast error variance in an endogenous variable is due to
+
+    * Own past shocks to that endogenous variable?
+    * All past shocks to the other endogenous variables?
+    
+Shows the relative importance of all the endogenous variables in contributing to the variation in the focal endogenous variable.
+
+```{r }
+
+```

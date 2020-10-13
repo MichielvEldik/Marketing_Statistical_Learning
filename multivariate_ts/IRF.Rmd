@@ -1,0 +1,136 @@
+---
+title: "IRF"
+author: "Michiel van Eldik"
+date: "10/13/2020"
+output: html_document
+---
+
+Once we have specified our dynamic model system. Nice! That's really the heart of what we do. We can now start with making our __estimations__. These can be used to make __policy decisions__. However, we have included so many parameters, that it may be nearly impossible to interpret all parameters.
+
+* __Exogeneous__ is actually really straight forward
+* __Endogeneous__ is not so straight-forward
+
+If you have this whole system of feedback and lags, it's almost impossible to get what's going on.
+
+
+## __IRF in practise__
+
+The basic idea is that
+    * We apply a "shock" to one of the series (e.g., advertising)
+    * We trace the effect of this shock through the system on each of the other series (sales, price, competitor advertising, etc.)
+The we calculate between __two series__:
+    * One benchmark series where nothing happens
+    * One shock series where the shock is applied.
+    
+    = calculate the difference between these two series.
+    
+What happens to our system if I apply the shock, what happens if I don't do it? What is the additional sales due to the shock in sales?
+
+
+### __When variables are stationary__
+If you have stationary variables...
+
+No lasting effects of our shocks. Series return to it's pre-shock level.
+
+Effects to analyse:
+  * Immediate effect
+  * Cumulative effect (in this case interesting as there is no permanent effect) i.e., what is the __full effect overall__
+  * Permanent effec = 0
+
+### __When variables are non-stationary__
+If you have evolving variables...
+
+Effects do not die over time.
+Series may not return back!
+
+    * Immediate effect
+* Cumulative effect (less interesting
+    
+## __Restricted IRF__
+Standard situation: Estimate a full VAR/VEC without parameter restrictions. __All endogeneous variables are allowed to affect each other at every single lag__ 
+But how to observe the relative contribution of different variables to the final outcome observed?
+
+Solution: Compare the restricted IRF with the full IRF to get insight on the relative contribution.
+
+
+E.g., Trace the effect of advertising on sales, while keeping competitor variables constant. What is the pure effect of our advertising, without any competitor reaction effects?
+
+## __Generalized IRF__
+
+With the restricted IRF, you have to specify logic yourself. You impose the order yourself: Advertising, performance, satisfaction. That might have an effect. BUT __sometimes the ordering is not clear__.
+
+There are all kinds of metrics like online purchase-funnel behaviour, online metrics, etc.
+
+That's where we get the idea of __Generalized IRF__ = calculate the immediate effect from the variance-covariance matrix.
+
+
+
+Standard R packages don't exist for this.
+
+
+
+## __Case__
+
+```{r }
+library(lmtest)
+library(vars)
+library(aTSA)
+
+railways.df <-read.csv("../SLIM0607Railways.csv")
+```
+
+```{r }
+#Determining lag length of the endogenous variables
+railendo = railways.df[,c(3,2,5)]
+railexo = railways.df[,c(11,7,8,13,9,10)]    #The trend does not have to be added here, as it can be immediately added through type "both"
+VARselect(railendo,lag.max = 4, type = "both", exogen = railexo)
+```
+
+
+```{r }
+#Estimating the VAR model, and reporting results for the individual equations
+railest <- VAR(railendo, p=1, type = "both", exogen = railexo)
+
+# Pass-based variable
+summary(railest,"LNKMABOFIX2")
+
+# Ticket-based variable
+summary(railest,"LNKMLOSFIX2")
+
+# Satisfaction variable
+summary(railest,"DLNAOAVERAGE_2L")
+```
+
+```{r }
+#Generating the IRFs
+railirf1 <- irf(railest, impulse = NULL, response = "LNKMABOFIX2", n.ahead = 12,
+               ortho = TRUE, cumulative = FALSE, boot = TRUE, ci = 0.95,
+               runs = 500)  
+plot(railirf1)
+
+railirf2 <- irf(railest, impulse = NULL, response = "LNKMABOFIX2", n.ahead = 12,
+               ortho = TRUE, cumulative = TRUE, boot = TRUE, ci = 0.95,
+               runs = 500)  
+plot(railirf2)
+
+railirf3 <- irf(railest, impulse = NULL, response = "LNKMLOSFIX2", n.ahead = 12,
+               ortho = TRUE, cumulative = FALSE, boot = TRUE, ci = 0.95,
+               runs = 500)  
+plot(railirf3)
+
+railirf4 <- irf(railest, impulse = NULL, response = "LNKMLOSFIX2", n.ahead = 12,
+               ortho = TRUE, cumulative = TRUE, boot = TRUE, ci = 0.95,
+               runs = 500)  
+plot(railirf4)
+
+railirf5 <- irf(railest, impulse = NULL, response = "DLNAOAVERAGE_2L", n.ahead = 12,
+                ortho = TRUE, cumulative = TRUE, boot = TRUE, ci = 0.95,
+                runs = 500)  
+plot(railirf5)
+
+railirf6 <- irf(railest, impulse = NULL, response = "DLNAOAVERAGE_2L", n.ahead = 12,
+                ortho = TRUE, cumulative = TRUE, boot = TRUE, ci = 0.90,
+                runs = 500) 
+plot(railirf6)
+```
+
