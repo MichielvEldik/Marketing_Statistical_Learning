@@ -78,9 +78,68 @@ If one is stationary and the other isn't, there is no chance in cointegration at
 
 Yes, by using differencing.
 
+## __The Case__
+
+
 ```{r }
-# Perform some of the tests
-getwd()
+library(lmtest)
+library(vars)
+library(aTSA)
+
+railways.df <-read.csv("../SLIM0607Railways.csv")
 ```
+
+### __Testing for Stationarity__ 
+#### __Are the series pass-based stationary?__
+
+* ADF = Trend-stationary
+* PP = Trend-stationary
+* KPSS = Trend-stationary
+
+Conclusion: Trend-Stationary
+
+```{r }
+adf.test(railways.df[,c(2)], nlag = 2, output = TRUE)
+pp.test(railways.df[,c(2)], output = TRUE)
+kpss.test(railways.df[,c(2)], output = TRUE)
+```
+
+#### __Are the series ticket-based stationary?__
+
+* ADF = Unit root
+* PP = Likely stationary
+* KPSS = Stationary
+
+Conclusion: Stationary
+
+```{r }
+adf.test(railways.df[,c(3)], nlag = 2, output = TRUE)
+pp.test(railways.df[,c(3)], output = TRUE)
+kpss.test(railways.df[,c(3)], output = TRUE)
+```
+
+#### __Are the series satisfaction stationary?__
+
+* ADF = Unit root
+* PP = Unit root
+* KPSS = Stationary
+
+Conclusion: Unit root
+
+```{r }
+adf.test(railways.df[,c(4)], nlag = 2, output = TRUE)
+pp.test(railways.df[,c(4)], output = TRUE)
+kpss.test(railways.df[,c(4)], output = TRUE)
+```
+
+#### __Conclusion__
+
+* One evolving series is satisfaction. Hence we conclude it in first differencing.
+* All other series are stationary (also the exogeneous variables advertising and adstock)
+
+So... Do we have cointegration? NO! We need at least 2 series that are evolving for there to be cointegration.
+
+
+
 
 

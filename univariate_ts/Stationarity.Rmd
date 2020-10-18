@@ -17,12 +17,22 @@ The entire distyribution does not need to be the same per se. But some condtions
 * Variance $\sigma$ of the series is constant over time
 * There should be no seasonal component
 
-### __Why should we care?__
+### __Trend-Stationary__
+In the statistical analysis of time series, a trend-stationary process is a stochastic process from which an underlying trend (function solely of time) can be removed, leaving a stationary process. The trend does not have to be linear.
 
-```{r }
+### __Types of stationarity tests__
 
+#### __Augmented Dickey-Fuller Test (ADF)__
 
-```
+_coming soon_
+
+#### __Phillips-Perron Test__
+
+_coming soon_
+
+#### __Kwiatkowski-Phillips-Schmidt-Shin (KPSS) test__
+
+_coming soon_
 
 ***
 ## __Unit Root__
@@ -103,7 +113,7 @@ library(astsa)
 ```
 
 ```{r read file}
-food.df <- read.csv("SLIM0405DataSeries.csv")
+food.df <- read.csv("../SLIM0405DataSeries.csv")
 ```
 
 ```{r, fig.align="center"}

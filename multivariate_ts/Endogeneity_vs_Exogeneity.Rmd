@@ -1,0 +1,156 @@
+---
+title: "Endogeneity_Exogeneity"
+author: "Michiel van Eldik"
+date: "10/13/2020"
+output: html_document
+---
+
+In an economic model, an __exogenous variable__ is one whose value is determined outside the model and is imposed on the model, and an exogenous change is a change in an exogenous variable. In contrast, an __endogenous variable__ is a variable whose value is determined by the model. An endogenous change is a change in an endogenous variable in response to an exogenous change that is imposed upon the model. The term __endogeneity__ in econometrics has a related but distinct meaning. An endogenous random variable is correlated with the error term in the econometric model, while an __exogenous variable__ is not.
+
+An important step in the model is deciding which variable is __endogeneous__ and which variable is __exogeneous__. In other words, is the variable going to be a predictor, or is it going to be an outcome in our model?
+
+The basic idea of a dynamic system is to treat each variable as endogeneous until __proven exogeneous__. Guilty until proven innocent. You allow for these endogeneous effects until you can prove that they are exogeneous (from outside of the model).
+
+## __When is a variable exogeneous? What to do?__
+
+A practical example. You are selling ice creams. Obviously there is a seasonal component. Namely, when the weather is nice, you will sell more ice cream. You may even advertise more. Hence, sales and advertising can be considered endogeneous variables in the model. They are driven by the weather variable. The weather, however, is __never__ going to be driven by how much you advertise. So the weather really can't be an endogeneous variable in the model. To extend this example, your competitor may start advertising more during the same periods as you. We might be quick to assume that also our competitor variable is __exogeneous__. However, if we start advertising more on certain days, he might copy you! If this were the case, the competitor is included as an endogeneous variable because its value may be affected by other variables in the model (in this case, our advertising).
+
+In sum, an __exogeneous__ variable is a variabnle which value is determined __OPUTSIDE__ of our model but has impact on our predicted variable. We can __never__ assume exogeneity, we must first prove it! E.g.,:
+* Sugar tax
+* Weather
+* etc.
+
+
+The result of including exogeneous variables: __VAR becomes VARX model: A model with exogeneous variables__
+
+## __Weak Exogeneity__
+When:
+  making inferences of the effect from _x_ on _y_.
+
+## __Strong Exogeneity__
+When:
+  making forcasts of _y_ conditional on _x_
+  Implies weak exogeneity and __no Granger Causality__
+  Is the minimum level for treating variables as exogeneous. 
+  
+In other words, we may only classify a variable as exogeneous if there is at least strong exogeneity. Which means no Granger causality.
+
+## __Super Exogeneity__
+
+
+?? _More on this later__
+
+
+## __The Case__
+
+Let's extend our origina model with exogeneous variables! Yay!
+
+### __Before: Reduced-form Endogeneous__
+
+* Ticket-based travel
+* Pass-based travel
+* Differenced Satisfaction
+
+### __After: Exogeneous model (VARX)__
+
+Remember that advertising was pre-determined! So advertising can't be endogeneous since it won't change based on other variables in the model.
+
+Now we have the following __outcome variables__:
+
+* Ticket-based travel
+* Pass-based travel
+* Differenced Satisfaction
+
+And the following direct effects:
+
+* Adstock
+* Retail promotions
+* Own promotions
+
+AND the strict exogeneity
+
+* Gasoline
+* trend
+* sinseason
+* cosseason
+
+And finally...
+
+* Vector of error terms
+
+
+### __Lag selection in VAR(X)__
+
+* More lags = higher explanatory power
+* More lags = Better white-noise structure of residuals
+
+* Fewer lags = Better forecasting accuracy
+* Fewer lags = allows for inclusion of MORE endogeneous variables
+
+
+#### __Procedure for lag selection__
+
+* likelihood test
+    * Comparing a model with p lags with p + 1 lags
+    * Stopping when model does not improve anymore
+    
+
+* information criteria with focus on predictive accuracy
+    * Takes into account that every added variable must bring something substantial to the table 
+    * punishes for adding stuff that is not relevant!
+    
+* Information criteria with focus on correct __order__
+    * Bayesian Informatiuon BIC/SBC = more critical than AIC
+    * Hannan-Quinn information criterion = more critical than AIC
+
+What they all have in common: Lower = better.
+
+#### __Which one is better?__
+Overall, BIC performs pretty well. Both for order and forecasting. BUT, AIC has better forecasting accuracy.
+
+#### __What if they contradict each other?__
+Sometimes, they do not yield the same results. What to do?
+
+* Compare the numbers of suggested lags: How much different are they?
+* Compare the number of suggested lags with previous research in a similair setting: What looks reasonable?
+* Estimate the model with different lag orders as robustness check.
+
+
+## __The Case__
+```{r }
+library(aTSA)
+library(lmtest)
+library(vars)
+railways.df <-read.csv("../SLIM0607Railways.csv")
+```
+
+
+### __How many lags to include?__
+```{r }
+#Determining lag length of the endogenous variables
+railendo = railways.df[,c(3,2,5)]
+railexo = railways.df[,c(11,7,8,13,9,10)]    #The trend does not have to be added here, as it can be immediately added through type "both"
+VARselect(railendo,lag.max = 4, type = "both", exogen = railexo)
+```
+
+* AIC gives 4
+* HQ gives 4
+* BIC gives 1
+* BIC gives 1
+
+We know that BIC performs pretty well. Also, we know there are relatively few observations. More lags means consuming __more degrees of freedom__. Furthermore, previous research in marketing also most often reports 1 lag as optimal.
+
+Hence, we like to keep 1 lag.
+
+
+
+
+## __Asymmetries__
+Traditionally, all variables included as endogeneous are supposed to have the same number of lags. __BUT__ is this really what reality looks like? That's not necessarily the case. E.g., we know that if you look at how service performance and satisfaction affect each other: We know that a negative service experience will have longer lasting impact on satisfaction, than an improved satisfaction would have on service performance. There is an __asymmetry__!
+
+Some variables have more lags than others. So what to do? You impose restrictions on your coefficients. 
+
+
+
+
+

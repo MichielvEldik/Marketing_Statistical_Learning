@@ -31,9 +31,121 @@ $$\left[\begin{array}{ccc} y_{1t} \\ y_{2t} \end{array}\right] = \left[\begin{ar
 * Error terms must be i.i.d. etc.
 
 
-## __Strucutral Form__
+## __Structural Form (SVAR)__
+In short, it allows for expressing theory in your model. But it's bad for estimating.
+
+Imagine a scenario where Wage is dependent on status and policy. While status is dependent on wage and the fact that someone is married. The following series of equations is what we refer to as a __structural__ form of equations:
+
+$$Wage = \beta_0 + \beta_1Status + \beta_2Policy + \varepsilon_1$$
+$$Status = \Upsilon_0 + \Upsilon_1Wage + \Upsilon_2Married + \varepsilon_2$$
+It's __Structural__ in the sense that it represents the underlying economic theory of what is going on. But there is an issue here! $Wage$ is going to be correlated with $\varepsilon_2$ and $Status$ is correlated with $\varepsilon_1$. To do an OLS, error terms mustn't be correlated. We get something that is called __Simultaneity Bias__. It means that we have some bias in our estimates of parameters as a result of the fact that there is endogeneity within our model.
+
+What does all of this mean? 
+
+* You have an __endogeneity problem__ when there is a correlation between your $X$ variable and the error term in the model.
+* Remember, The error term in your model is due to all of the things in your DV $Y$ that is __not__ explained by your __X__.
+* So the __endogeneity probelm__ arises when something is related to your $Y$ variable and also your $X$ variable and that 'something' is not included in your model.
+* If it's not included in your model, it will be included in your error term.
+* For BLUE estimators in OLS, error terms must be random and not correlated to variables in your model.
+
+We can see what happens if we were to substitute $Status$ into our $Wage$ equation.
+
+$$
+\begin{aligned}
+Wage &= \beta_0 + \beta_1\ (\Upsilon_0 + \Upsilon_1Wage + \Upsilon_2Married + \varepsilon_2) + \beta_2Policy + \varepsilon_1 \\
+Wage &= \beta_0 + \beta_1\Upsilon_0 + \beta_1\Upsilon_1Wage + \beta_1\Upsilon_2Married + \beta_1\varepsilon_2 + \beta_2Policy + \varepsilon_1 \\
+\end{aligned}
+$$
+Now we rearrange to get wage on the left hand side of our equation
+
+$$
+\begin{aligned}
+Wage - \beta_1\Upsilon_1Wage &= \beta_0 + \beta_1\Upsilon_0 + \beta_1\Upsilon_2Married + \beta_1\varepsilon_2 + \beta_2Policy + \varepsilon_1 \\
+(1-\beta_1\Upsilon_1)*Wage &= \beta_0 + \beta_1\Upsilon_0 + \beta_1\Upsilon_2Married + \beta_1\varepsilon_2 + \beta_2Policy + \varepsilon_1
+\end{aligned}
+$$
+
+Now if we were to isolate $Wage$ by dividing the right hand side with $(1-\beta_1\Upsilon_1)$, we would get an equation like $Wage = ..., etc.$. Now what we are not dividing any error terms so $\varepsilon_2$ is going to remain in that equation. So... $Wage= ..., etc, ..., \varepsilon_2$. This means that Wage is in some way related to $\varepsilon_2$. So now let's track back to our original system of equations:
+
+$$Wage = \beta_0 + \beta_1Status + \beta_2Policy + \varepsilon_1$$
+$$Status = \Upsilon_0 + \Upsilon_1Wage + \Upsilon_2Married + \varepsilon_2$$
+
+Because $Wage$ is correlated with $\varepsilon_2$, it means that in our $Status$ equation, there will be a correlation between $Wage$ and $\varepsilon_2$. In other words, there will be a correlation between the error term and a predictor variable.
 
 ## __Reduced Form__
+In short, it allows for better estimation. Better prediction. But, less theory. We let the data speak. In marketing (versus econometrics), we are more pragmatic and you will likely see models that prefer estimation over interpretation.
+
+So we learned from the Structural form that OLS is not possible due to biased estimators. What then is the reduced form? Well, we actually already saw the reduced form while showing the endogeneity problem in the structural form. The reduced form of...
+
+$$Wage = \beta_0 + \beta_1Status + \beta_2Policy + \varepsilon_1$$
+$$Status = \Upsilon_0 + \Upsilon_1Wage + \Upsilon_2Married + \varepsilon_2$$
+is achieved by plugging in $Status$ equation in $Wage$ equation and vice-versa...
+
+$$
+\begin{aligned}
+Wage &= \beta_0 + \beta_1\Upsilon_0 + \beta_1\Upsilon_1Wage + \beta_1\Upsilon_2Married + \beta_1\varepsilon_2 + \beta_2Policy + \varepsilon_1 \\
+Status &= Vice-versa...  
+\end{aligned}
+$$
+
+Which can be summarized as..
+
+$$
+\begin{aligned}
+Wage &= \delta_0  + \delta_1(= \beta_1\Upsilon_1)Policy + \delta_2Married + \nu_1 (= \varepsilon_1, \varepsilon_2) \\
+Status &= Vice-versa...  
+\end{aligned}
+$$
+
+This is a reduced form because these equations don't really tell us anything in an economical sense anymore. They are just a result of us rearranging things.
+
+* The __disadvantage__ is that we lost the original economical interpretation. We are not going to be able to get an idea about our original coefficients of interest $\beta_1$ for $Status$, $\beta_2$ for $Policy$, $\Upsilon_1$ for $Wage$ and $\Upsilon_2$ for $Married$. We don't get to know how much impact these variables have on wage and status. 
+* The __advantage__ is that we can estimate equations with unbiased and consistent estimators!
+* The __advantage__ is that we can wwrok with more variables!
+
+So that's the problem with reduced form, we can't really tell anything from our regression. However, there is a strategy to deal with this problem!
+
+An important decision to make now is:
+* What variables to be included as endogeneous?
+* What variables to be included as exogeneous?
+* How many lags to be included?
+
+## __Moving average form__
+
+
+
 
 ## __Lag Selection__
+
+
+## __The Case__
+A major European railway company wants to investigate the drivers of public transport usage. There are 2 types of travel:
+
+* Ticket-based: occasional, leisure oriented
+* Pass-based: regular, work-oriented
+
+What are the possible drivers?
+* Stepping stone theory: first tricket based, then moving to pass based
+* Spill over effect: pass-based travellers "advertising" to ticket-based travellers
+* Feedback effects through customer satisfaction
+
+The marketing efforts are:
+* Advertising
+* Promotional actions through the own channels and retailers
+
+```{r }
+railways.df <-read.csv("../SLIM0607Railways.csv")
+```
+
+### __Statioanrity__
+
+As was done in the cointegration file. In sum:
+
+* Ticket-based travel = stationary
+* Pass-based-travel = stationary
+* Satisfaction = evolving
+
+Lag-length $L$ is to be determined.
+
+
 

@@ -1,0 +1,21 @@
+---
+title: "VARVEC_Extensions"
+author: "Michiel van Eldik"
+date: "10/13/2020"
+output: html_document
+---
+
+## __Other Extensions__
+
+The basic VAR/VEC models can be extended to include:
+    * Assymetric effects
+    * Interaction effects
+    * Time dependent effects
+    
+Not in standard R packages. Requries tailored program coding byu the researcher.
+
+
+
+```{r }
+
+```
