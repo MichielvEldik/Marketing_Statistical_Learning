@@ -3,7 +3,7 @@
 #SLIM0405 Traditional Time Series Analysis
 
 ####
-
+getwd()
 install.packages("astsa")
 install.packages("tseries")
 install.packages("FitAR")
@@ -17,7 +17,11 @@ library(astsa)
 library(lmtest)
 
 # Read in the data, and provide overview of the variables
-foodcorp.df <-read.csv("~/Teaching/RUG/SLIM/SLIM0405DataSeries.csv")
+foodcorp.df <-read.csv("../SLIM0405DataSeries.csv")
+
+
+food.df <- read.csv("../SLIM0405DataSeries.csv")
+
 str(foodcorp.df)
 
 
