@@ -82,7 +82,7 @@ kpss.test(railways.df[,c(4)], output = TRUE)
 
 
 #Determining lag length of the endogenous variables
-railendo = railways.df[,c(3,2,5)]
+railendo = railways.df[,c()]
 railexo = railways.df[,c(11,7,8,13,9,10)]    #The trend does not have to be added here, as it can be immediately added through type "both"
 VARselect(railendo,lag.max = 4, type = "both", exogen = railexo)
 
@@ -267,6 +267,7 @@ summary(flscest,"FLlnprice")
 summary(flscest,"SClnvsal")
 summary(flscest,"SClnadv")
 summary(flscest,"SClnprice")
+
 
 
 

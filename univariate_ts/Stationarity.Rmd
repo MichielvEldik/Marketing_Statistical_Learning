@@ -5,7 +5,11 @@ output: html_document
 
 ***
 
-Intuitively, stationarity means that the statistical properties of the process do not change over time.
+Intuitively, stationarity means that the statistical properties of the process do not change over time. 
+
+* Stationary data is data with a fixed variance.
+* Future data are easy to predict values
+
 
 ### __Strong Stationarity__
 Time series is strong stationary given that the unconditional joint probability distribution (probability of two things happening at the same time) does not change when shifted in time. At a window in time a, the distribution is the same as at a window in time b.
@@ -16,6 +20,10 @@ The entire distyribution does not need to be the same per se. But some condtions
 * Mean $\mu$ of the time series is constant over time 
 * Variance $\sigma$ of the series is constant over time
 * There should be no seasonal component
+
+### __Mean Stationary__
+A fixed mean in the data.
+
 
 ### __Trend-Stationary__
 In the statistical analysis of time series, a trend-stationary process is a stochastic process from which an underlying trend (function solely of time) can be removed, leaving a stationary process. The trend does not have to be linear.

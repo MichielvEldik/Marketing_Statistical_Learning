@@ -7,7 +7,7 @@
 
 
 # Read in the data, and provide overview of the variables
-railways.df <-read.csv("~/Teaching/RUG/SLIM/SLIM0607Railways.csv")
+railways.df <-read.csv("SLIM0607Railways.csv")
 str(railways.df)
 
 
@@ -128,6 +128,7 @@ railirf5 <- irf(railest, impulse = NULL, response = "DLNAOAVERAGE_2L", n.ahead =
                 runs = 500)  
 plot(railirf5)
 
+
 railirf6 <- irf(railest, impulse = NULL, response = "DLNAOAVERAGE_2L", n.ahead = 12,
                 ortho = TRUE, cumulative = TRUE, boot = TRUE, ci = 0.90,
                 runs = 500) 
@@ -158,16 +159,16 @@ barplot(bartry2,  col = brewer.pal(3, "YlOrRd"), names.arg = c("TBT","PBT","CSAT
 
 
 # Read in the data, and provide overview of the variables
-flsc.df <-read.csv("~/Teaching/RUG/SLIM/SLIM0607FLSC.csv")
+flsc.df <-read.csv("SLIM0607FLSC.csv")
 str(flsc.df)
 
 
 # Overview of the essentials
 summary(flsc.df)
 summary(flsc.df[,c(2, 5, 8, 11, 14, 17)])
-plot(flsc.df[,c(1)],flsc.df[,c(2)], type="l", col="red", lwd=5, xlab="weeks", ylab="sales", main="Volume sales FinLäsk over time")
-plot(flsc.df[,c(1)],flsc.df[,c(5)], type="l", col="red", lwd=5, xlab="weeks", ylab="advertising", main="Advertising FinLäsk over time")
-plot(flsc.df[,c(1)],flsc.df[,c(8)], type="l", col="red", lwd=5, xlab="weeks", ylab="unit price", main="Unit price FinLäsk over time")
+plot(flsc.df[,c(1)],flsc.df[,c(2)], type="l", col="red", lwd=5, xlab="weeks", ylab="sales", main="Volume sales FinL?sk over time")
+plot(flsc.df[,c(1)],flsc.df[,c(5)], type="l", col="red", lwd=5, xlab="weeks", ylab="advertising", main="Advertising FinL?sk over time")
+plot(flsc.df[,c(1)],flsc.df[,c(8)], type="l", col="red", lwd=5, xlab="weeks", ylab="unit price", main="Unit price FinL?sk over time")
 plot(flsc.df[,c(1)],flsc.df[,c(11)], type="l", col="red", lwd=5, xlab="weeks", ylab="sales", main="Volume sales SodaClub over time")
 plot(flsc.df[,c(1)],flsc.df[,c(14)], type="l", col="red", lwd=5, xlab="weeks", ylab="advertising", main="Advertising SodaClub over time")
 plot(flsc.df[,c(1)],flsc.df[,c(17)], type="l", col="red", lwd=5, xlab="weeks", ylab="unit price", main="Unit price SodaClub over time")

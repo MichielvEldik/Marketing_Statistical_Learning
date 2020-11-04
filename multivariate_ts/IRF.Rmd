@@ -91,15 +91,34 @@ VARselect(railendo,lag.max = 4, type = "both", exogen = railexo)
 #Estimating the VAR model, and reporting results for the individual equations
 railest <- VAR(railendo, p=1, type = "both", exogen = railexo)
 
+```
+
+
+## __Pass-based Travel__
+```{r }
 # Pass-based variable
 summary(railest,"LNKMABOFIX2")
 
+```
+
+```{r }
 # Ticket-based variable
 summary(railest,"LNKMLOSFIX2")
 
+```
+
+
+```{r }
 # Satisfaction variable
 summary(railest,"DLNAOAVERAGE_2L")
+
 ```
+
+
+
+
+
+
 
 ```{r }
 #Generating the IRFs

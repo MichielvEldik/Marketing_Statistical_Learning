@@ -1,0 +1,11 @@
+---
+title: "Variable transformations"
+author: "Michiel van Eldik"
+date: "10/21/2020"
+output: html_document
+---
+
+* lin - lin
+* log - log
+* log - lin
+* lin - log

@@ -24,7 +24,6 @@ It's subjective. The best way is to plot your data and have a look. It can be de
 * De-seasoning / Decomposition
 * Sinus and Cosinus functions (more advanced)
 
-
 ```{r }
 library(forecast)
 arima <- arima.sim(model = list(order = c(0, 1, 0)), n = 100)
@@ -35,3 +34,8 @@ foo <- simulate(model, nsim=1000)
   fit <- Arima(foo, order=c(1,1,1), seasonal=c(1,1,1))
 plot(foo)
 ```
+
+## __Should we remove seasonality?__
+
+In marketing, we tend to leave seasonality as is, but account for it using control variables.
+
